@@ -6,3 +6,6 @@ project/boot/
 project/plugins/project
 bin/
 gen/
+
+# Ignore IntelliJ's files.
+.idea
