@@ -30,4 +30,4 @@ There's just the bare-bones so far! There's much to be done!
 - A demo level!
 
 ### 1.0.0
-- This will become Public Domain (Unlicence), and open for collaboration.
+- This will become Public Domain (Unlicense), and open for collaboration.
