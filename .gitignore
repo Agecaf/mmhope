@@ -9,3 +9,6 @@ gen/
 
 # Ignore IntelliJ's files.
 .idea
+
+# Our logs
+*.log
