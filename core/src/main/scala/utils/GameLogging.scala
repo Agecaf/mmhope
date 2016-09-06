@@ -1,9 +1,7 @@
-package utils
+package com.agecaf.mmhope.utils
 
 import java.text.SimpleDateFormat
 import java.util.Calendar
-
-import utils.GameLogger.Loggable
 
 /**
   * Used for logging throughout the game. Produces logs which can be read in-game and in mmhope.log.
@@ -12,11 +10,26 @@ trait GameLogging {
   import GameLogger._
 
   // Logging methods.
-  def info(msg: String) = GameLogger.info.add(Message(msg))
-  def infoStart(key: String) = GameLogger.info.add(Start(key))
-  def infoEnd(key: String) = GameLogger.info.add(End(key))
-  def error(msg: String) = GameLogger.info.add(Error(msg))
-  def error(t: Throwable) = GameLogger.info.add(Error(t))
+  def info(msg: String) = {
+    GameLogger.info.add(Message(msg))
+    GameLogger.debug.add(Message(msg))
+  }
+  def infoStart(key: String) = {
+    GameLogger.info.add(Start(key))
+    GameLogger.debug.add(Start(key))
+  }
+  def infoEnd(key: String) = {
+    GameLogger.info.add(End(key))
+    GameLogger.debug.add(End(key))
+  }
+  def error(msg: String) = {
+    GameLogger.info.add(Error(msg))
+    GameLogger.debug.add(Error(msg))
+  }
+  def error(t: Throwable) = {
+    GameLogger.info.add(Error(t))
+    GameLogger.debug.add(Error(t))
+  }
   def debug(msg: String) = GameLogger.debug.add(Message(msg))
   def debugStart(key: String) = GameLogger.debug.add(Start(key))
   def debugEnd(key: String) = GameLogger.debug.add(End(key))
@@ -58,7 +71,7 @@ object GameLogger {
   }
   case class Start(key: String, at: String, end: Option[End]) extends Loggable {
     override val toString: String =
-      if (!end.isDefined) s"[$at] Started $key..." else s"[$at] [${end.get.at}] Done $key."
+      if (end.isEmpty) s"[$at] Started $key..." else s"[$at] [${end.get.at}] Done $key."
   }
   case class End(key: String, at: String) extends Loggable
 

@@ -8,8 +8,9 @@ import scala.io.Source
 import scala.concurrent.{Future, Promise}
 import scala.util._
 import scala.concurrent.ExecutionContext.Implicits.global
-
 import Exceptions._
+import com.agecaf.mmhope.modloading.Data.ModIndex
+import com.agecaf.mmhope.utils.GameLogging
 
 
 /**
@@ -20,7 +21,10 @@ import Exceptions._
   * Then they are available for being queried by the user, to start loading mods.
   *
   */
-object IndexReader {
+object IndexReader extends GameLogging {
+
+  // Indices of all Mods
+  var modIndices: List[(File, ModIndex)] = List()
 
   /**
     * Refreshes all mods' index data.
@@ -31,14 +35,20 @@ object IndexReader {
     * @return
     */
   def refresh(): Future[Unit] = Future {
+    infoStart("Indexing")
 
     // Ensures the root mod directory exists.
     val modDirectory = new File("../mods")
     if (!modDirectory.exists) throw FolderDidNotExist(modDirectory)
     if (!modDirectory.isDirectory) throw FolderDidNotExist(modDirectory)
 
-    // Looks for paths in
+    // Look for paths in mod directory.
     val modPaths: List[File] = getModPaths(modDirectory)
+
+    // Parse indices.
+    modIndices = modPaths map {f => (f, parseIndex(f))}
+
+    infoEnd("Indexing")
   }
 
   /**
@@ -57,6 +67,31 @@ object IndexReader {
       path.listFiles.toList filter (_.isDirectory) flatMap getModPaths
   }
 
+  /**
+    * Parses the index file of a mod.
+    *
+    * Note: Should be called only on directories where we know there's an index file.
+    *
+    * @param path the path to the mod.
+    */
+  def parseIndex(path: File): ModIndex = {
+    infoStart(s"Parsing $path")
 
+    // Get the file, it should exist!
+    val indexFile: File = (path.listFiles filter (_.getName == "index.json"))(0)
 
+    // Read the file
+    val indexText: String = Source.fromFile(indexFile).getLines mkString "\n"
+
+    // Parse the File
+    val indexJSON = parse(indexText)
+
+    // Extract data
+    implicit val formats = DefaultFormats
+    val modIndex: ModIndex = indexJSON.extract[ModIndex]
+
+    infoEnd(s"Parsing $path")
+
+    modIndex
+  }
 }
