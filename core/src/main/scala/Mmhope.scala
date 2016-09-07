@@ -2,6 +2,8 @@ package com.agecaf.mmhope
 
 import java.io._
 
+import com.agecaf.mmhope.core.Geometry._
+import com.agecaf.mmhope.modloading.Data.AssetList
 import com.agecaf.mmhope.modloading.IndexReader
 import com.agecaf.mmhope.modloading.Exceptions._
 import com.badlogic.gdx.Game
@@ -11,6 +13,7 @@ import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util._
 
 class Mmhope extends Game with GameLogging {
+
   override def create() = {
     debugStart("Creating")
 
@@ -25,10 +28,28 @@ class Mmhope extends Game with GameLogging {
         error(s"Failed Indexing, unexpected: $t")
     }
 
+    // Graphics Manager
+    graphics.Manager.create()
+
+
+
+
+
+    // ROUGH WORKING
+    graphics.Manager.load(AssetList(fonts = List("default")))
+
+
+
     debugEnd("Creating")
   }
 
   override def dispose(): Unit = {
+    debugStart("Disposing")
+
+    // Graphics Manager
+    graphics.Manager.dispose()
+
+    debugEnd("Disposing")
     debug("Printing logs.")
 
     // Print Logs.
@@ -39,5 +60,20 @@ class Mmhope extends Game with GameLogging {
     val pwi = new PrintWriter(new File("../info.log"))
     pwi.write(GameLogger.info.toString)
     pwi.close()
+  }
+
+  override def render(): Unit = {
+    graphics.Manager.begin()
+
+    val center = Placement(Point(0.0, 0.0), 0.0)
+
+    graphics.Manager.text("default", "Hello World!", center, 1, 1)
+
+    graphics.Manager.end()
+  }
+
+  override def resize(width: Int, height: Int): Unit = {
+    graphics.Manager.viewport.update(width, height)
+    graphics.Manager.viewportText.update(width, height)
   }
 }

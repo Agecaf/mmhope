@@ -11,4 +11,10 @@ object Data {
     val libList: List[String] = libs getOrElse List()
     val levelList: List[String] = levels getOrElse List()
   }
+
+  case class AssetList(
+    fonts: List[String] = List(),
+    textures: List[String] = List(),
+    sounds: List[String] = List()
+  )
 }

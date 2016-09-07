@@ -16,6 +16,7 @@ object Settings {
     scalaVersion := (scalaVersion in LocalProject("all-platforms")).value,
     libraryDependencies ++= Seq(
       "com.badlogicgames.gdx" % "gdx" % libgdxVersion.value,
+      "com.badlogicgames.gdx" % "gdx-freetype" % libgdxVersion.value,
       "org.json4s" %% "json4s-native" % "3.4.0"
     ),
     javacOptions ++= Seq(
