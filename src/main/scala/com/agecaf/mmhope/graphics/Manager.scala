@@ -8,6 +8,7 @@ import com.agecaf.mmhope.graphics.AssetLibrary
 import com.agecaf.mmhope.core.Geometry._
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Pixmap.Format
+import com.badlogic.gdx.math.Matrix4
 import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
 
 /**
@@ -21,10 +22,10 @@ object Manager extends GameLogging {
   val camera: OrthographicCamera = new OrthographicCamera()
   camera.setToOrtho(false, 1.000, 1.618)
   val cameraText: OrthographicCamera = new OrthographicCamera()
-  cameraText.setToOrtho(false, 1000, 1618)
+  cameraText.setToOrtho(false, 500, 809)
 
   val viewport: Viewport = new FitViewport(1.000, 1.618, camera)
-  val viewportText: Viewport = new FitViewport(1000, 1618, cameraText)
+  val viewportText: Viewport = new FitViewport(500, 809, cameraText)
 
   var fonts: Map[String, BitmapFont] = Map()
   var textures: Map[String, Texture] = Map()
@@ -40,15 +41,6 @@ object Manager extends GameLogging {
     spriteBatch.setProjectionMatrix(camera.projection)
 
     debugEnd("Creating com.agecaf.mmhope.graphics.Manager")
-
-
-
-    // TODO Debug
-    val pixmap = new Pixmap(1, 1, Format.RGB888)
-    pixmap.setColor(Color.BLUE)
-    pixmap.fill()
-    textures = Map("default" -> new Texture(pixmap))
-    pixmap.dispose()
   }
 
   /**
@@ -82,7 +74,11 @@ object Manager extends GameLogging {
     for ((id, font) <- fonts if !(assets.fonts contains id))
       font.dispose()
 
+    for ((id, texture) <- textures if !(assets.textures contains id))
+      texture.dispose()
+
     fonts = fonts filter {case (id, font) => assets.fonts contains id}
+    textures = textures filter {case (id, texture) => assets.textures contains id}
 
     // Load new assets.
     val newFonts: Map[String, BitmapFont] = {
@@ -90,7 +86,14 @@ object Manager extends GameLogging {
         yield id -> AssetLibrary.loadFont(id)
       ls.toMap
     }
+    val newTextures: Map[String, Texture] = {
+      val ls = for (id <- assets.textures if !(textures contains id))
+        yield id -> AssetLibrary.loadTexture(id)
+      ls.toMap
+    }
+
     fonts ++= newFonts
+    textures ++= newTextures
 
     debugEnd("Loading assets com.agecaf.mmhope.graphics.Manager")
   }
@@ -109,11 +112,7 @@ object Manager extends GameLogging {
     // Begin.
     spriteBatch.begin()
     spriteBatch.setProjectionMatrix(camera.projection)
-
-    spriteBatch.draw(textures("default"), - 0.6f, -1.0f, 2f, 3f)
-    val font: BitmapFont = new BitmapFont()
-    font.getData.setScale(0.1)
-    //font.draw(spriteBatch, "Hello", 0, 0)
+    spriteBatch.setTransformMatrix(Placement(Point(0, 0), 0))
   }
 
   /**
@@ -139,17 +138,49 @@ object Manager extends GameLogging {
 
     // TODO scale, tint and alpha.
 
-    if (!(fonts contains fontId)) {error(s"Font $fontId was not loaded."); return}
+    if (!(fonts contains fontId)) {error(s"Font $fontId was not found."); return}
     val font: BitmapFont = fonts(fontId)
 
     spriteBatch.setProjectionMatrix(cameraText.projection)
     spriteBatch.setTransformMatrix(
       Placement(
-        Point(placement.x * 1000, placement.y * 1000),
+        Point(placement.x * 500, placement.y * 500),
         placement.orientation)
     )
-    font.getData.setScale(5, 5)
     font.draw(spriteBatch, text, 0, 0)
     spriteBatch.setProjectionMatrix(camera.projection)
+  }
+
+  /**
+    * Draw a texture at a placement.
+    * @param textureId the ID of the texture to draw.
+    * @param placement the placement to draw the texture.
+    * @param targetRect the target rectangle (with respect to placement).
+    * @param sourceRect the source rectangle.
+    * @param flipX whether to flip horizontally. Defaults to true.
+    * @param flipY whether to flip vertically. Defaults to false.
+    */
+  def draw(
+      textureId: String,
+      placement: Placement,
+      targetRect: Rect[Float],
+      sourceRect: Rect[Int],
+      flipX: Boolean = false,
+      flipY: Boolean = false): Unit = {
+
+    // TODO tint, alpha
+
+    if (!(textures contains textureId)) {error(s"Texture $textureId was not found."); return}
+    val texture = textures(textureId)
+
+    spriteBatch.setTransformMatrix(placement)
+    spriteBatch.draw(
+      texture,
+      targetRect.x, targetRect.y,
+      targetRect.w, targetRect.h,
+      sourceRect.x, sourceRect.y,
+      sourceRect.w, sourceRect.h,
+      flipX, flipY
+    )
   }
 }

@@ -126,4 +126,6 @@ object Geometry {
       Pose(Some(placement), timeOffset)
   }
 
+  case class Rect[T](x: T, y: T, w: T, h: T)
+
 }

@@ -1,0 +1,23 @@
+While MM:Hope will be public domain from version 1.0.0, that cannot be said of all the things it is using.
+
+LIBRARIES
+=========
+
+DEFAULT ASSETS
+==============
+
+- Tuffy.ttf is a Public Domain font. Thanks to the awesome people behind his font!
+http://tulrich.com/fonts/
+
+ABOUT MODS
+==========
+
+Each Mod can have their own license. That means you could use your own assets without
+giving them for commercial purposes, for example, or that you could use assets with
+attribution licenses.
+
+This also means that you can make proprietary mods, but for that I'd recommend forking the
+whole project and making it your own engine, rather than depending on the potentially-changing
+engine.
+
+That being said, it'd be really awesome to have more public domain stuff we can hack 'n share!

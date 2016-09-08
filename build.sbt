@@ -9,6 +9,7 @@ lazy val root = (project in file(".")).
       "com.badlogicgames.gdx" % "gdx" % "1.9.4",
       "com.badlogicgames.gdx" % "gdx-freetype" % "1.9.4",
       "com.badlogicgames.gdx" % "gdx-backend-lwjgl" % "1.9.4",
+      "com.badlogicgames.gdx" % "gdx-freetype-platform" % "1.9.4" classifier "natives-desktop",
       "com.badlogicgames.gdx" % "gdx-platform" % "1.9.4" classifier "natives-desktop",
       "org.json4s" %% "json4s-native" % "3.4.0"
     ),
