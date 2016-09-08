@@ -20,12 +20,12 @@ object Manager extends GameLogging {
   def spriteBatch: SpriteBatch = spriteBatchOpt.get
 
   val camera: OrthographicCamera = new OrthographicCamera()
-  camera.setToOrtho(false, 1.000, 1.618)
+  camera.setToOrtho(false, 1.000, 1.5)
   val cameraText: OrthographicCamera = new OrthographicCamera()
-  cameraText.setToOrtho(false, 500, 809)
+  cameraText.setToOrtho(false, 500, 750)
 
-  val viewport: Viewport = new FitViewport(1.000, 1.618, camera)
-  val viewportText: Viewport = new FitViewport(500, 809, cameraText)
+  val viewport: Viewport = new FitViewport(1.000, 1.5, camera)
+  val viewportText: Viewport = new FitViewport(500, 750, cameraText)
 
   var fonts: Map[String, BitmapFont] = Map()
   var textures: Map[String, Texture] = Map()
