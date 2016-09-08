@@ -25,7 +25,7 @@ There's just the bare-bones so far! There's much to be done!
 ## Road Map
 ### 0.0.1
 - The first modding framework.
-- The basic utils for making bullets, with ShapeRender.
+- The basic com.agecaf.mmhope.utils for making bullets, with ShapeRender.
 - A basic game engine.
 - A demo level!
 

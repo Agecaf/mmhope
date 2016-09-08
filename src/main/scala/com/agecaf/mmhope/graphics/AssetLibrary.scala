@@ -1,4 +1,4 @@
-package graphics
+package com.agecaf.mmhope.graphics
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 
 /**

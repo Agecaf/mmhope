@@ -4,10 +4,10 @@ import java.io._
 
 import com.agecaf.mmhope.core.Geometry._
 import com.agecaf.mmhope.modloading.Data.AssetList
-import com.agecaf.mmhope.modloading.IndexReader
 import com.agecaf.mmhope.modloading.Exceptions._
+import com.agecaf.mmhope.modloading.IndexReader
+import com.agecaf.mmhope.utils._
 import com.badlogic.gdx.Game
-import utils._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util._

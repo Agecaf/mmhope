@@ -10,5 +10,9 @@ gen/
 # Ignore IntelliJ's files.
 .idea
 
-# Our logs
+# Our logs.
 *.log
+
+# Assets.
+*.png
+*.ttf

@@ -4,7 +4,7 @@ import com.agecaf.mmhope.modloading.Data.AssetList
 import com.agecaf.mmhope.utils.GameLogging
 import com.badlogic.gdx.graphics._
 import com.badlogic.gdx.graphics.g2d.{BitmapFont, SpriteBatch}
-import graphics.AssetLibrary
+import com.agecaf.mmhope.graphics.AssetLibrary
 import com.agecaf.mmhope.core.Geometry._
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Pixmap.Format
@@ -33,13 +33,13 @@ object Manager extends GameLogging {
     * Creates the necessary graphic objects for the whole execution of the program.
     */
   def create(): Unit = {
-    debugStart("Creating graphics.Manager")
+    debugStart("Creating com.agecaf.mmhope.graphics.Manager")
 
     // Sprite batch.
     spriteBatchOpt = Some(new SpriteBatch())
     spriteBatch.setProjectionMatrix(camera.projection)
 
-    debugEnd("Creating graphics.Manager")
+    debugEnd("Creating com.agecaf.mmhope.graphics.Manager")
 
 
 
@@ -55,7 +55,7 @@ object Manager extends GameLogging {
     * Disposes everything needing disposal.
     */
   def dispose(): Unit = {
-    debugStart("Disposing graphics.Manager")
+    debugStart("Disposing com.agecaf.mmhope.graphics.Manager")
 
     // Dispose of assets
     fonts foreach {case (id, font) => font.dispose()}
@@ -68,7 +68,7 @@ object Manager extends GameLogging {
     spriteBatch.dispose()
     spriteBatchOpt = None
 
-    debugEnd("Disposing graphics.Manager")
+    debugEnd("Disposing com.agecaf.mmhope.graphics.Manager")
   }
 
   /**
@@ -76,7 +76,7 @@ object Manager extends GameLogging {
     * @param assets the AssetList to load.
     */
   def load(assets: AssetList): Unit = {
-    debugStart("Loading assets graphics.Manager")
+    debugStart("Loading assets com.agecaf.mmhope.graphics.Manager")
 
     // Dispose of previous, now unnecessary Assets.
     for ((id, font) <- fonts if !(assets.fonts contains id))
@@ -92,7 +92,7 @@ object Manager extends GameLogging {
     }
     fonts ++= newFonts
 
-    debugEnd("Loading assets graphics.Manager")
+    debugEnd("Loading assets com.agecaf.mmhope.graphics.Manager")
   }
 
   /**
