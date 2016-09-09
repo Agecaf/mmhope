@@ -20,12 +20,12 @@ object Manager extends GameLogging {
   def spriteBatch: SpriteBatch = spriteBatchOpt.get
 
   val camera: OrthographicCamera = new OrthographicCamera()
-  camera.setToOrtho(false, 1.000, 1.5)
+  camera.setToOrtho(false, 1.000, 1.25)
   val cameraText: OrthographicCamera = new OrthographicCamera()
-  cameraText.setToOrtho(false, 500, 750)
+  cameraText.setToOrtho(false, 500, 625)
 
-  val viewport: Viewport = new FitViewport(1.000, 1.5, camera)
-  val viewportText: Viewport = new FitViewport(500, 750, cameraText)
+  val viewport: Viewport = new FitViewport(1.000, 1.25, camera)
+  val viewportText: Viewport = new FitViewport(500, 625, cameraText)
 
   var fonts: Map[String, BitmapFont] = Map()
   var textures: Map[String, Texture] = Map()
@@ -125,14 +125,12 @@ object Manager extends GameLogging {
     * @param fontId the font to use.
     * @param text the text to render
     * @param placement where to render the text.
-    * @param scale the scale.
     * @param alpha the transparency to use.
     * @param tint An optional tint.
     */
   def text(fontId: String,
            text: String,
            placement: Placement,
-           scale: Float,
            alpha: Float = 1,
            tint: Option[Color] = None): Unit = {
 

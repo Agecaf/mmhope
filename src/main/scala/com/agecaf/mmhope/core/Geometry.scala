@@ -71,8 +71,8 @@ object Geometry {
     def sideways(d: Float): Placement =
       Placement(
         Point(
-          x + d * sin(orientation)    ,
-          y - d * cos(orientation)  //,
+          x - d * sin(orientation)    ,
+          y + d * cos(orientation)  //,
         )                             ,
         orientation                 //,
       )

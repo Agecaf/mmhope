@@ -3,17 +3,24 @@ package com.agecaf.mmhope
 import java.io._
 
 import com.agecaf.mmhope.core.Geometry._
+import com.agecaf.mmhope.graphics.Screen
 import com.agecaf.mmhope.modloading.Data.AssetList
 import com.agecaf.mmhope.modloading.Exceptions._
 import com.agecaf.mmhope.modloading.IndexReader
+import com.agecaf.mmhope.menu.MainMenuScreen
 import com.agecaf.mmhope.utils._
-import com.badlogic.gdx.Game
+import com.badlogic.gdx.{Game, Gdx}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util._
 
-class Mmhope extends Game with GameLogging {
+object Mmhope extends Game with GameLogging {
 
+  var currentScreen: Screen = MainMenuScreen
+
+  /**
+    * Called once Gdx is ready to run.
+    */
   override def create() = {
     debugStart("Creating")
 
@@ -31,18 +38,23 @@ class Mmhope extends Game with GameLogging {
     // Graphics Manager
     graphics.Manager.create()
 
+    // Starts initial screen.
+    changeToScreen(MainMenuScreen)
 
 
 
 
     // ROUGH WORKING
-    graphics.Manager.load(AssetList(fonts = List("default"), textures = List("example_bullets")))
+    //graphics.Manager.load(AssetList(fonts = List("default"), textures = List("example_bullets")))
 
 
 
     debugEnd("Creating")
   }
 
+  /**
+    * Called once the window is closed, to dispose of any disposables left.
+    */
   override def dispose(): Unit = {
     debugStart("Disposing")
 
@@ -51,6 +63,8 @@ class Mmhope extends Game with GameLogging {
 
     debugEnd("Disposing")
     debug("Printing logs.")
+
+    println(GameLogger.debug.toString)
 
     // Print Logs.
     val pwd = new PrintWriter(new File("../debug.log"))
@@ -62,27 +76,44 @@ class Mmhope extends Game with GameLogging {
     pwi.close()
   }
 
+  /**
+    * Called once every frame.
+    */
   override def render(): Unit = {
+    val dt = Gdx.graphics.getDeltaTime
+
+    // Triggers logic on current screen.
+    currentScreen.logic(dt)
+
     graphics.Manager.begin()
 
-    val center = Placement(Point(0.0, 0.0), 0.0)
-
-    val left = Placement(Point(-0.5, 0.0), 0.2)
-
-    graphics.Manager.text("default", "Hello World!", center, 1, 1)
-    graphics.Manager.text("default", "Mods", left, 1, 1)
-    graphics.Manager.text("default", "Levels", left sideways 0.1, 1, 1)
-
-    val tr = Rect[Float](-0.02f, -0.02f, 0.04f, 0.04f)
-    val sr = Rect[Int](20, 20, 20, 20)
-
-    graphics.Manager.draw("example_bullets", center, tr, sr)
+      // Render the current screen.
+      // This also contains any frame logic.
+      currentScreen.render(
+        dt = dt,
+        center = Placement(Point(0.0, 0.0), 0.0),
+        alphaMultiplier = 1
+      )
 
     graphics.Manager.end()
   }
 
+  /**
+    * Called when the screen is resized.
+    */
   override def resize(width: Int, height: Int): Unit = {
     graphics.Manager.viewport.update(width, height)
     graphics.Manager.viewportText.update(width, height)
+  }
+
+  /**
+    * Changes into the given screen.
+    *
+    * Notes: Loads assets required by screen.
+    */
+  def changeToScreen(screen: Screen): Unit = {
+    graphics.Manager.load(screen.assets)
+    currentScreen = screen
+    currentScreen.reset()
   }
 }

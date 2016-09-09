@@ -38,7 +38,7 @@ object IndexReader extends GameLogging {
     infoStart("Indexing")
 
     // Ensures the root mod directory exists.
-    val modDirectory = new File("../mods")
+    val modDirectory = new File("./mods")
     if (!modDirectory.exists) throw FolderDidNotExist(modDirectory)
     if (!modDirectory.isDirectory) throw FolderDidNotExist(modDirectory)
 

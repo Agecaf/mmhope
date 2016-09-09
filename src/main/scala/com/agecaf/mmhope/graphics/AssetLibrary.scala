@@ -18,6 +18,15 @@ object AssetLibrary {
     * @return the font.
     */
   def loadFont: String => BitmapFont = {
+
+    case fontWithSize(fontName, size) =>
+      val generator = new FreeTypeFontGenerator(new FileHandle("Tuffy.ttf")) // TODO implement list of fonts!
+      val parameter = new FreeTypeFontParameter()
+      parameter.size = size.toInt
+      val font = generator.generateFont(parameter)
+      generator.dispose()
+      font
+
     case "default" =>
       val generator = new FreeTypeFontGenerator(new FileHandle("Tuffy.ttf"))
       val parameter = new FreeTypeFontParameter()
@@ -44,4 +53,7 @@ object AssetLibrary {
     }
     new Texture("./mods/examples/modtemplate/bullets.png")
   }
+
+  // Regex patterns
+  val fontWithSize = """([a-zA-Z_]+)-([0-9]+)""".r
 }

@@ -1,6 +1,7 @@
 package com.agecaf.mmhope.graphics
 
 import com.agecaf.mmhope.core.Geometry.Placement
+import com.agecaf.mmhope.modloading.Data.AssetList
 
 /**
   * An abstraction for a Screen.
@@ -26,10 +27,12 @@ abstract class Screen {
   def render(dt: Float, center: Placement, alphaMultiplier: Float): Unit = {}
 
   /**
-    * Any dealing with user input shoud be here.
+    * Any dealing with user input should be here.
     *
     * This method is here so that superscreens can cut input.
     * @param dt
     */
   def logic(dt: Float): Unit = {}
+
+  val assets: AssetList = AssetList()
 }
