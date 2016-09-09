@@ -16,12 +16,12 @@ import Geometry._
   *   a "hit-box". In a sense, even the background and text can be "hit-less" bullets!
   */
 object BulletTypes {
-  type RenderShapeAtPlace = (Placement, ShapeRenderer) => Unit
+  type RenderShapeAtPlace = (Placement) => Unit
   type IsHittingAtPlace = (Placement, Point) => Boolean
 
   type Movement = Time => Placement
 
-  type RenderShapeAtTime = (Time, ShapeRenderer) => Unit
+  type RenderShapeAtTime = (Time) => Unit
   type IsHittingAtTime = (Time, Point) => Boolean
 
   case class StaticBullet(render: RenderShapeAtPlace, isHitting: IsHittingAtPlace)
