@@ -4,7 +4,7 @@ import java.io._
 
 import com.agecaf.mmhope.core.Geometry._
 import com.agecaf.mmhope.graphics.Screen
-import com.agecaf.mmhope.modloading.Data.AssetList
+import com.agecaf.mmhope.modloading.Data.AssetSet
 import com.agecaf.mmhope.modloading.Exceptions._
 import com.agecaf.mmhope.modloading.IndexReader
 import com.agecaf.mmhope.menu.MainMenuScreen

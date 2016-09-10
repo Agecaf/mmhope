@@ -1,7 +1,7 @@
 package com.agecaf.mmhope.graphics
 
 import com.agecaf.mmhope.core.Geometry.Placement
-import com.agecaf.mmhope.modloading.Data.AssetList
+import com.agecaf.mmhope.modloading.Data.AssetSet
 
 /**
   * An abstraction for a Screen.
@@ -34,5 +34,5 @@ abstract class Screen {
     */
   def logic(dt: Float): Unit = {}
 
-  val assets: AssetList = AssetList()
+  val assets: AssetSet = AssetSet()
 }

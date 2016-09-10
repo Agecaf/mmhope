@@ -12,9 +12,40 @@ object Data {
     val levelList: List[String] = levels getOrElse List()
   }
 
-  case class AssetList(
-    fonts: List[String] = List(),
-    textures: List[String] = List(),
-    sounds: List[String] = List()
-  )
+  case class AssetSet(
+    fonts: Set[String] = Set(),
+    textures: Set[String] = Set(),
+    sounds: Set[String] = Set()
+  ) {
+    def ++ (other: AssetSet): AssetSet =
+      AssetSet(
+        fonts ++ other.fonts,
+        textures ++ other.textures,
+        sounds ++ other.sounds
+      )
+    def -- (other: AssetSet): AssetSet =
+      AssetSet(
+        fonts -- other.fonts,
+        textures -- other.textures,
+        sounds -- other.sounds
+      )
+    def | (other: AssetSet): AssetSet =
+      AssetSet(
+        fonts | other.fonts,
+        textures | other.textures,
+        sounds | other.sounds
+      )
+    def & (other: AssetSet): AssetSet =
+      AssetSet(
+        fonts & other.fonts,
+        textures & other.textures,
+        sounds & other.sounds
+      )
+    def &~ (other: AssetSet): AssetSet =
+      AssetSet(
+        fonts &~ other.fonts,
+        textures &~ other.textures,
+        sounds &~ other.sounds
+      )
+  }
 }

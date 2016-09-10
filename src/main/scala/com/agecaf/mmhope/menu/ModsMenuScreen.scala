@@ -3,7 +3,7 @@ package com.agecaf.mmhope.menu
 import com.agecaf.mmhope.Mmhope
 import com.agecaf.mmhope.core.Geometry._
 import com.agecaf.mmhope.graphics.Screen
-import com.agecaf.mmhope.modloading.Data.{AssetList, ModIndex}
+import com.agecaf.mmhope.modloading.Data.{AssetSet, ModIndex}
 import com.agecaf.mmhope.modloading.IndexReader
 import com.agecaf.mmhope.graphics.{Manager => g}
 import com.badlogic.gdx.{Gdx, Input}
@@ -19,7 +19,13 @@ object ModsMenuScreen extends Screen {
   /**
     * See [[Screen]]
     */
-  override val assets = AssetList(fonts = List("default-42", "default-20"))
+  override val assets = AssetSet(fonts = Set("default-42", "default-20"))
+
+  override def reset(): Unit = {
+    // Check the currentSelection is still valid
+    if (currentSelection >= IndexReader.modIndices.length)
+      currentSelection = IndexReader.modIndices.length - 1
+  }
 
   override def render(δt: Float, center: Placement, α: Float): Unit = {
 
@@ -31,17 +37,26 @@ object ModsMenuScreen extends Screen {
     }
   }
 
-  def renderMod(mod: ModIndex, placement: Placement, α: Float): Unit = {
-    g.text("default-42", mod.name, placement, α)
+  def renderMod(mod: ModIndex, placement: Placement, alphaMultiplier: Float): Unit = {
+    g.text("default-42", mod.name, placement, alphaMultiplier)
   }
 
   override def logic(δt: Float): Unit = {
     // Change selection Up or down.
-    if(Gdx.input.isKeyJustPressed(Input.Keys.UP)) currentSelection -= 1
-    if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN)) currentSelection += 1
+    if(Gdx.input.isKeyJustPressed(Input.Keys.UP) && currentSelection > 0)
+      currentSelection -= 1
+
+    if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN) && currentSelection < IndexReader.modIndices.length - 1)
+      currentSelection += 1
 
     // Go back
-    if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) Mmhope.changeToScreen(MainMenuScreen)
+    if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT))
+      Mmhope.changeToScreen(MainMenuScreen)
 
+    // Select
+    if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+      val (path, mod) = IndexReader.modIndices(currentSelection)
+      Mmhope.changeToScreen(new ModLoadingScreen(mod, path))
+    }
   }
 }

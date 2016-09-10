@@ -1,6 +1,6 @@
 package com.agecaf.mmhope.graphics
 
-import com.agecaf.mmhope.modloading.Data.AssetList
+import com.agecaf.mmhope.modloading.Data.AssetSet
 import com.agecaf.mmhope.utils.GameLogging
 import com.badlogic.gdx.graphics._
 import com.badlogic.gdx.graphics.g2d.{BitmapFont, SpriteBatch}
@@ -67,33 +67,36 @@ object Manager extends GameLogging {
     * Load assets in AssetList, and dispose of all unused assets.
     * @param assets the AssetList to load.
     */
-  def load(assets: AssetList): Unit = {
+  def load(assets: AssetSet): Unit = {
     debugStart("Loading assets com.agecaf.mmhope.graphics.Manager")
 
-    // Dispose of previous, now unnecessary Assets.
-    for ((id, font) <- fonts if !(assets.fonts contains id))
-      font.dispose()
+    val oldAssets = AssetSet(
+      fonts.keys.toSet,
+      textures.keys.toSet,
+      Set()
+    )
 
-    for ((id, texture) <- textures if !(assets.textures contains id))
-      texture.dispose()
+    // Dispose of previous, now unnecessary Assets.
+    val unusedAssets = oldAssets -- assets
+
+    unusedAssets.fonts foreach {fonts(_).dispose()}
+    unusedAssets.textures foreach {textures(_).dispose()}
 
     fonts = fonts filter {case (id, font) => assets.fonts contains id}
     textures = textures filter {case (id, texture) => assets.textures contains id}
 
-    // Load new assets.
-    val newFonts: Map[String, BitmapFont] = {
-      val ls = for (id <- assets.fonts if !(fonts contains id))
-        yield id -> AssetLibrary.loadFont(id)
-      ls.toMap
-    }
-    val newTextures: Map[String, Texture] = {
-      val ls = for (id <- assets.textures if !(textures contains id))
-        yield id -> AssetLibrary.loadTexture(id)
-      ls.toMap
-    }
+    // Add new assets.
+    val newAssets = assets -- oldAssets
 
-    fonts ++= newFonts
-    textures ++= newTextures
+    fonts ++=
+      (newAssets.fonts map {id =>
+        id -> AssetLibrary.loadFont(id)
+      }).toMap
+
+    textures ++=
+      (newAssets.textures map {id =>
+        id -> AssetLibrary.loadTexture(id)
+      }).toMap
 
     debugEnd("Loading assets com.agecaf.mmhope.graphics.Manager")
   }

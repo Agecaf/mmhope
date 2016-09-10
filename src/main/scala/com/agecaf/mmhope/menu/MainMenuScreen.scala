@@ -4,7 +4,7 @@ import com.agecaf.mmhope.Mmhope
 import com.agecaf.mmhope.core.Geometry._
 import com.agecaf.mmhope.graphics.Screen
 import com.agecaf.mmhope.graphics.{Manager => g}
-import com.agecaf.mmhope.modloading.Data.AssetList
+import com.agecaf.mmhope.modloading.Data.AssetSet
 import com.badlogic.gdx.{Gdx, Input}
 
 /**
@@ -18,7 +18,7 @@ object MainMenuScreen extends Screen {
   /**
     * See [[Screen]]
     */
-  override val assets = AssetList(fonts = List("default-42", "default-20"))
+  override val assets = AssetSet(fonts = Set("default-42", "default-20"))
 
   /**
     * See [[Screen]]
@@ -72,8 +72,11 @@ object MainMenuScreen extends Screen {
     */
   override def logic(δt: Float): Unit = {
     // Change selection Up or down.
-    if(Gdx.input.isKeyJustPressed(Input.Keys.UP) && currentSelection > 0) currentSelection -= 1
-    if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN) && currentSelection < 4) currentSelection += 1
+    if(Gdx.input.isKeyJustPressed(Input.Keys.UP) && currentSelection > 0)
+      currentSelection -= 1
+
+    if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN) && currentSelection < 4)
+      currentSelection += 1
 
     // Select
     if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) currentSelection match {
