@@ -6,9 +6,12 @@ import com.agecaf.mmhope.core.Geometry._
 import com.agecaf.mmhope.graphics.{Manager => g}
 import com.agecaf.mmhope.graphics.Screen
 import com.agecaf.mmhope.modloading.Data.AssetSet
+import com.agecaf.mmhope.modloading.ModLoader
 import com.badlogic.gdx.{Gdx, Input}
 import org.json4s._
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.util._
 
 /**
   * Screen for loading a Mod.
@@ -16,6 +19,9 @@ import org.json4s._
 class ModLoadingScreen(val mod: JValue, val path: File) extends Screen {
 
   override val assets = AssetSet(fonts = Set("default-42", "default-20"))
+
+  var loading = false
+  var loaded = false
 
   override def render(δt: Float, center: Placement, alphaMultiplier: Float): Unit = {
 
@@ -35,5 +41,11 @@ class ModLoadingScreen(val mod: JValue, val path: File) extends Screen {
     // Go back
     if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) Mmhope.changeToScreen(ModsMenuScreen)
 
+    if(!loading && !loaded && Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
+      ModLoader.load(mod, path) onComplete {
+        case Success(_) => loaded = true; loading = false
+        case Failure(t) => println(t)
+      }
+    }
   }
 }

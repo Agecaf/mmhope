@@ -55,4 +55,10 @@ object BulletMethods {
   // TODO zone limiters
 
   // TODO generators
+
+  val nullBullet: Bullet =
+    Bullet(
+      render = {t => ()},
+      isHitting = {(t, p) => false}
+    )
 }

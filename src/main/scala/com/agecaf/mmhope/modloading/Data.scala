@@ -1,6 +1,8 @@
 package com.agecaf.mmhope.modloading
 
+import com.agecaf.mmhope.core.BulletTypes.{Bullet, RenderAtTime}
 import com.badlogic.gdx.graphics.Color
+
 import scala.language.implicitConversions
 
 
@@ -43,6 +45,17 @@ object Data {
         sounds &~ other.sounds
       )
   }
+
+  case class Level(
+    name: String,
+    duration: Float,
+    background: RenderAtTime,
+    bullet: Bullet,
+    assets: AssetSet
+  )
+}
+
+object InternalData {
 
   case class Font(
     path: String,

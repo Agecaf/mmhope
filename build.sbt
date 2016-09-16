@@ -12,7 +12,9 @@ lazy val root = (project in file(".")).
       "com.badlogicgames.gdx" % "gdx-freetype-platform" % "1.9.4" classifier "natives-desktop",
       "com.badlogicgames.gdx" % "gdx-platform" % "1.9.4" classifier "natives-desktop",
       "org.json4s" %% "json4s-native" % "3.4.0",
-      "com.github.pathikrit" %% "better-files" % "2.16.0"
+      "com.github.pathikrit" %% "better-files" % "2.16.0",
+      "org.scala-lang" % "scala-reflect" % scalaVersion.value,
+      "org.scala-lang" % "scala-compiler" % scalaVersion.value
 
     ),
     javacOptions ++= Seq(

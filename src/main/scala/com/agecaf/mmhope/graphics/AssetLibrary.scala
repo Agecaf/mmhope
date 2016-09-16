@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import org.json4s._
+import com.agecaf.mmhope.utils.LibGDXImplicits._
 
 /**
   * Stores construction information for all the assets loaded.
@@ -24,21 +25,22 @@ object AssetLibrary {
     */
   def loadFont: String => BitmapFont = {
 
-    case fontWithSize(fontName, size) =>
-      val generator = new FreeTypeFontGenerator(new FileHandle("Tuffy.ttf")) // TODO implement list of fonts!
+    case fontWithSize(fontName, size) if fontsDefined contains fontName =>
+      val generator = new FreeTypeFontGenerator(fontsDefined(fontName).path)
       val parameter = new FreeTypeFontParameter()
       parameter.size = size.toInt
       val font = generator.generateFont(parameter)
       generator.dispose()
       font
 
-    case "default" =>
-      val generator = new FreeTypeFontGenerator(new FileHandle("Tuffy.ttf"))
+    case fontName if fontsDefined contains fontName =>
+      val generator = new FreeTypeFontGenerator(fontsDefined(fontName).path)
       val parameter = new FreeTypeFontParameter()
       parameter.size = 42
       val font = generator.generateFont(parameter)
       generator.dispose()
       font
+
     case _ => new BitmapFont()
   }
 
@@ -59,8 +61,14 @@ object AssetLibrary {
     new Texture("./mods/examples/modtemplate/bullets.png")
   }
 
+  /** Adds assets to the asset library.
+    *
+    * Note they are not actually loaded, only defined.
+    *
+    * @param data The data with the asset definitions.
+    * @param rootPath The path from which the assets are referred by.
+    */
   def defineAssets(data: JValue, rootPath: File): Unit = {
-
     // Define fonts.
     val JArray(fonts) = data \ "fonts"
     fonts foreach { font =>
@@ -70,8 +78,6 @@ object AssetLibrary {
       fontsDefined += name -> FontData(name, path)
     }
   }
-
-
 
   // Regex patterns
   val fontWithSize = """([a-zA-Z_]+)-([0-9]+)""".r

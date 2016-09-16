@@ -4,5 +4,9 @@
   "author" : "Agecaf",
   "description" : "Template for Mods.",
   "libs" : [],
-  "levels" : []
+  "levels" : ["level.scala"],
+  "assets" : {
+    "fonts" : [],
+    "textures" : []
+  }
 }
