@@ -3,10 +3,12 @@ package com.agecaf.mmhope.menu
 import com.agecaf.mmhope.Mmhope
 import com.agecaf.mmhope.core.Geometry._
 import com.agecaf.mmhope.graphics.Screen
-import com.agecaf.mmhope.modloading.Data.{AssetSet, ModIndex}
+import com.agecaf.mmhope.modloading.Data.AssetSet
 import com.agecaf.mmhope.modloading.IndexReader
 import com.agecaf.mmhope.graphics.{Manager => g}
 import com.badlogic.gdx.{Gdx, Input}
+import org.json4s._
+import scala.language.postfixOps
 
 
 /**
@@ -37,8 +39,10 @@ object ModsMenuScreen extends Screen {
     }
   }
 
-  def renderMod(mod: ModIndex, placement: Placement, alphaMultiplier: Float): Unit = {
-    g.text("default-42", mod.name, placement, alphaMultiplier)
+  def renderMod(mod: JValue, placement: Placement, alphaMultiplier: Float): Unit = {
+    implicit val formats = DefaultFormats
+
+    g.text("default-42", (mod \ "name") extractOrElse "-", placement, alphaMultiplier)
   }
 
   override def logic(δt: Float): Unit = {

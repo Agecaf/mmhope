@@ -11,7 +11,9 @@ lazy val root = (project in file(".")).
       "com.badlogicgames.gdx" % "gdx-backend-lwjgl" % "1.9.4",
       "com.badlogicgames.gdx" % "gdx-freetype-platform" % "1.9.4" classifier "natives-desktop",
       "com.badlogicgames.gdx" % "gdx-platform" % "1.9.4" classifier "natives-desktop",
-      "org.json4s" %% "json4s-native" % "3.4.0"
+      "org.json4s" %% "json4s-native" % "3.4.0",
+      "com.github.pathikrit" %% "better-files" % "2.16.0"
+
     ),
     javacOptions ++= Seq(
       "-Xlint",

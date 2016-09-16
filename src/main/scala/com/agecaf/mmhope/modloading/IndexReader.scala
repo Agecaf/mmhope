@@ -2,15 +2,14 @@ package com.agecaf.mmhope.modloading
 
 import org.json4s._
 import org.json4s.native.JsonMethods._
-import java.io.File
 
-import scala.io.Source
-import scala.concurrent.{Future, Promise}
-import scala.util._
+import better.files._
+
+import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import Exceptions._
-import com.agecaf.mmhope.modloading.Data.ModIndex
 import com.agecaf.mmhope.utils.GameLogging
+import scala.language.postfixOps
 
 
 /**
@@ -24,7 +23,7 @@ import com.agecaf.mmhope.utils.GameLogging
 object IndexReader extends GameLogging {
 
   // Indices of all Mods
-  var modIndices: List[(File, ModIndex)] = List()
+  var modIndices: List[(File, JValue)] = List()
 
   /**
     * Refreshes all mods' index data.
@@ -38,7 +37,7 @@ object IndexReader extends GameLogging {
     infoStart("Indexing")
 
     // Ensures the root mod directory exists.
-    val modDirectory = new File("./mods")
+    val modDirectory = file"./mods"
     if (!modDirectory.exists) throw FolderDidNotExist(modDirectory)
     if (!modDirectory.isDirectory) throw FolderDidNotExist(modDirectory)
 
@@ -59,12 +58,12 @@ object IndexReader extends GameLogging {
     */
   def getModPaths(path: File): List[File] = {
     // Looks whether this contains an index.json
-    if (path.listFiles exists (_.getName == "index.json"))
+    if (path/"index.json" exists)
       List(path)
 
     // And otherwise looks through its subdirectories.
     else
-      path.listFiles.toList filter (_.isDirectory) flatMap getModPaths
+      path.list withFilter (_.isDirectory) flatMap getModPaths toList
   }
 
   /**
@@ -74,24 +73,20 @@ object IndexReader extends GameLogging {
     *
     * @param path the path to the mod.
     */
-  def parseIndex(path: File): ModIndex = {
+  def parseIndex(path: File): JValue = {
     infoStart(s"Parsing $path")
 
     // Get the file, it should exist!
-    val indexFile: File = (path.listFiles filter (_.getName == "index.json"))(0)
+    val indexFile: File = path/"index.json"
 
     // Read the file
-    val indexText: String = Source.fromFile(indexFile).getLines mkString "\n"
+    val indexText: String = indexFile.lines mkString "\n"
 
     // Parse the File
     val indexJSON = parse(indexText)
 
-    // Extract data
-    implicit val formats = DefaultFormats
-    val modIndex: ModIndex = indexJSON.extract[ModIndex]
-
     infoEnd(s"Parsing $path")
 
-    modIndex
+    indexJSON
   }
 }

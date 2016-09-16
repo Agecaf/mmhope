@@ -1,15 +1,16 @@
 package com.agecaf.mmhope
 
-import java.io._
-
+import java.io.{File => JFile, PrintWriter}
+import better.files._
 import com.agecaf.mmhope.core.Geometry._
-import com.agecaf.mmhope.graphics.Screen
+import com.agecaf.mmhope.graphics.{AssetLibrary, Screen}
 import com.agecaf.mmhope.modloading.Data.AssetSet
 import com.agecaf.mmhope.modloading.Exceptions._
 import com.agecaf.mmhope.modloading.IndexReader
 import com.agecaf.mmhope.menu.MainMenuScreen
 import com.agecaf.mmhope.utils._
 import com.badlogic.gdx.{Game, Gdx}
+import org.json4s.native.JsonMethods._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.util._
@@ -23,6 +24,12 @@ object Mmhope extends Game with GameLogging {
     */
   override def create() = {
     debugStart("Creating")
+
+    // Define initial assets.
+    AssetLibrary.defineAssets(
+      data = parse(file"./assets/index.json".lines.mkString),
+      rootPath = file"./assets"
+    )
 
     // Load indexes.
     IndexReader.refresh().onComplete {
@@ -66,14 +73,8 @@ object Mmhope extends Game with GameLogging {
 
     println(GameLogger.debug.toString)
 
-    // Print Logs.
-    val pwd = new PrintWriter(new File("../debug.log"))
-    pwd.write(GameLogger.debug.toString)
-    pwd.close()
-
-    val pwi = new PrintWriter(new File("../info.log"))
-    pwi.write(GameLogger.info.toString)
-    pwi.close()
+    file"./debug.log" < GameLogger.debug.toString
+    file"./info.log" < GameLogger.info.toString
   }
 
   /**

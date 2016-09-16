@@ -6,9 +6,11 @@ project/boot/
 project/plugins/project
 bin/
 gen/
+.ensime_cache/
 
 # Ignore IntelliJ's files.
 .idea
+.ensime
 
 # Our logs.
 *.log

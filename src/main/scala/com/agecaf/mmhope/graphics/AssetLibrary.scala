@@ -1,10 +1,13 @@
 package com.agecaf.mmhope.graphics
+
+import better.files._
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.Pixmap.Format
 import com.badlogic.gdx.graphics.{Color, Pixmap, Texture}
 import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
+import org.json4s._
 
 /**
   * Stores construction information for all the assets loaded.
@@ -12,6 +15,8 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFont
   * This is not responsible for disposing of assets!
   */
 object AssetLibrary {
+
+  var fontsDefined: Map[String, FontData] = Map()
 
   /**
     * Loads a font given its id.
@@ -54,6 +59,22 @@ object AssetLibrary {
     new Texture("./mods/examples/modtemplate/bullets.png")
   }
 
+  def defineAssets(data: JValue, rootPath: File): Unit = {
+
+    // Define fonts.
+    val JArray(fonts) = data \ "fonts"
+    fonts foreach { font =>
+      val JString(name) = font \ "name"
+      val JString(relPath) = font \ "path"
+      val path = rootPath / relPath
+      fontsDefined += name -> FontData(name, path)
+    }
+  }
+
+
+
   // Regex patterns
   val fontWithSize = """([a-zA-Z_]+)-([0-9]+)""".r
+
+  case class FontData(name: String, path: File)
 }

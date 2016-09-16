@@ -1,6 +1,6 @@
 package com.agecaf.mmhope.modloading
 
-import java.io.File
+import better.files._
 
 
 object Exceptions {
