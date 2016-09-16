@@ -1,10 +1,10 @@
-package com.agecaf.mmhope.graphics
+package com.agecaf.mmhope.media
 
 import com.agecaf.mmhope.modloading.Data.AssetSet
 import com.agecaf.mmhope.utils.GameLogging
 import com.badlogic.gdx.graphics._
 import com.badlogic.gdx.graphics.g2d.{BitmapFont, SpriteBatch}
-import com.agecaf.mmhope.graphics.AssetLibrary
+import com.agecaf.mmhope.media.AssetLibrary
 import com.agecaf.mmhope.core.Geometry._
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Pixmap.Format

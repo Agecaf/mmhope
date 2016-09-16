@@ -2,7 +2,7 @@ package com.agecaf.mmhope.modloading
 
 import org.json4s._
 import better.files._
-import com.agecaf.mmhope.graphics.AssetLibrary
+import com.agecaf.mmhope.media.AssetLibrary
 
 import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global

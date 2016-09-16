@@ -1,20 +1,20 @@
-package com.agecaf.mmhope.menu
+package com.agecaf.mmhope.screen
 
 import com.agecaf.mmhope.Mmhope
 import com.agecaf.mmhope.core.Geometry._
-import com.agecaf.mmhope.graphics.Screen
 import com.agecaf.mmhope.modloading.Data.AssetSet
 import com.agecaf.mmhope.modloading.IndexReader
-import com.agecaf.mmhope.graphics.{Manager => g}
+import com.agecaf.mmhope.media.{Manager => g}
 import com.badlogic.gdx.{Gdx, Input}
 import org.json4s._
+
 import scala.language.postfixOps
 
 
 /**
   * Screen for choosing a Mod.
   */
-object ModsMenuScreen extends Screen {
+object ModsMenu extends Screen {
 
   var currentSelection: Int = 0
 
@@ -55,12 +55,12 @@ object ModsMenuScreen extends Screen {
 
     // Go back
     if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT))
-      Mmhope.changeToScreen(MainMenuScreen)
+      Mmhope.changeToScreen(MainMenu)
 
     // Select
     if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
       val (path, mod) = IndexReader.modIndices(currentSelection)
-      Mmhope.changeToScreen(new ModLoadingScreen(mod, path))
+      Mmhope.changeToScreen(new ModLoading(mod, path))
     }
   }
 }

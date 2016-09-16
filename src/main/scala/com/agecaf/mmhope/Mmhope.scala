@@ -1,13 +1,14 @@
 package com.agecaf.mmhope
 
-import java.io.{File => JFile, PrintWriter}
+import java.io.{PrintWriter, File => JFile}
+
 import better.files._
 import com.agecaf.mmhope.core.Geometry._
-import com.agecaf.mmhope.graphics.{AssetLibrary, Screen}
+import com.agecaf.mmhope.media.AssetLibrary
 import com.agecaf.mmhope.modloading.Data.AssetSet
 import com.agecaf.mmhope.modloading.Exceptions._
 import com.agecaf.mmhope.modloading.IndexReader
-import com.agecaf.mmhope.menu.MainMenuScreen
+import com.agecaf.mmhope.screen.{MainMenu, Screen}
 import com.agecaf.mmhope.utils._
 import com.badlogic.gdx.{Game, Gdx}
 import org.json4s.native.JsonMethods._
@@ -17,7 +18,7 @@ import scala.util._
 
 object Mmhope extends Game with GameLogging {
 
-  var currentScreen: Screen = MainMenuScreen
+  var currentScreen: Screen = MainMenu
 
   /**
     * Called once Gdx is ready to run.
@@ -43,10 +44,10 @@ object Mmhope extends Game with GameLogging {
     }
 
     // Graphics Manager
-    graphics.Manager.create()
+    media.Manager.create()
 
     // Starts initial screen.
-    changeToScreen(MainMenuScreen)
+    changeToScreen(MainMenu)
 
 
 
@@ -66,7 +67,7 @@ object Mmhope extends Game with GameLogging {
     debugStart("Disposing")
 
     // Graphics Manager
-    graphics.Manager.dispose()
+    media.Manager.dispose()
 
     debugEnd("Disposing")
     debug("Printing logs.")
@@ -86,7 +87,7 @@ object Mmhope extends Game with GameLogging {
     // Triggers logic on current screen.
     currentScreen.logic(dt)
 
-    graphics.Manager.begin()
+    media.Manager.begin()
 
       // Render the current screen.
       // This also contains any frame logic.
@@ -96,15 +97,15 @@ object Mmhope extends Game with GameLogging {
         alphaMultiplier = 1
       )
 
-    graphics.Manager.end()
+    media.Manager.end()
   }
 
   /**
     * Called when the screen is resized.
     */
   override def resize(width: Int, height: Int): Unit = {
-    graphics.Manager.viewport.update(width, height)
-    graphics.Manager.viewportText.update(width, height)
+    media.Manager.viewport.update(width, height)
+    media.Manager.viewportText.update(width, height)
   }
 
   /**
@@ -113,7 +114,7 @@ object Mmhope extends Game with GameLogging {
     * Notes: Loads assets required by screen.
     */
   def changeToScreen(screen: Screen): Unit = {
-    graphics.Manager.load(screen.assets)
+    media.Manager.load(screen.assets)
     currentScreen = screen
     currentScreen.reset()
   }

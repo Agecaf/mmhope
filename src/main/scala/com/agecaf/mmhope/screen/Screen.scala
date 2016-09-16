@@ -1,4 +1,4 @@
-package com.agecaf.mmhope.graphics
+package com.agecaf.mmhope.screen
 
 import com.agecaf.mmhope.core.Geometry.Placement
 import com.agecaf.mmhope.modloading.Data.AssetSet

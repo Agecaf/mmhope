@@ -1,4 +1,4 @@
-package com.agecaf.mmhope.graphics
+package com.agecaf.mmhope.media
 
 import better.files._
 import com.badlogic.gdx.files.FileHandle
@@ -17,7 +17,8 @@ import com.agecaf.mmhope.utils.LibGDXImplicits._
   */
 object AssetLibrary {
 
-  var fontsDefined: Map[String, FontData] = Map()
+  var definedFonts: Map[String, FontData] = Map()
+  var definedTextures: Map[String, TextureData] = Map()
 
   /**
     * Loads a font given its id.
@@ -25,16 +26,16 @@ object AssetLibrary {
     */
   def loadFont: String => BitmapFont = {
 
-    case fontWithSize(fontName, size) if fontsDefined contains fontName =>
-      val generator = new FreeTypeFontGenerator(fontsDefined(fontName).path)
+    case fontWithSize(fontName, size) if definedFonts contains fontName =>
+      val generator = new FreeTypeFontGenerator(definedFonts(fontName).path)
       val parameter = new FreeTypeFontParameter()
       parameter.size = size.toInt
       val font = generator.generateFont(parameter)
       generator.dispose()
       font
 
-    case fontName if fontsDefined contains fontName =>
-      val generator = new FreeTypeFontGenerator(fontsDefined(fontName).path)
+    case fontName if definedFonts contains fontName =>
+      val generator = new FreeTypeFontGenerator(definedFonts(fontName).path)
       val parameter = new FreeTypeFontParameter()
       parameter.size = 42
       val font = generator.generateFont(parameter)
@@ -49,8 +50,12 @@ object AssetLibrary {
     * @return the texture.
     */
   def loadTexture(textureId: String): Texture = {
-    // Default texture
-    if (textureId == "default") {
+    // Texture in library.
+    if (definedTextures contains textureId)
+      new Texture(definedTextures(textureId).path)
+
+    // Default Texture.
+    else {
       val pixmap = new Pixmap(1, 1, Format.RGB888)
       pixmap.setColor(Color.WHITE)
       pixmap.fill()
@@ -58,7 +63,6 @@ object AssetLibrary {
       pixmap.dispose()
       return texture
     }
-    new Texture("./mods/examples/modtemplate/bullets.png")
   }
 
   /** Adds assets to the asset library.
@@ -70,12 +74,19 @@ object AssetLibrary {
     */
   def defineAssets(data: JValue, rootPath: File): Unit = {
     // Define fonts.
-    val JArray(fonts) = data \ "fonts"
+    val JArray(fonts) = data \ "fonts" // Todo add fault tolerance
     fonts foreach { font =>
       val JString(name) = font \ "name"
-      val JString(relPath) = font \ "path"
-      val path = rootPath / relPath
-      fontsDefined += name -> FontData(name, path)
+      val JString(path) = font \ "path"
+      definedFonts += name -> FontData(name, rootPath / path)
+    }
+
+    // Define Textures.
+    val JArray(textures) = data \ "textures"
+    textures foreach { texture =>
+      val JString(name) = texture \ "name"
+      val JString(path) = texture \ "path"
+      definedTextures += name -> TextureData(name, rootPath / path)
     }
   }
 
@@ -83,4 +94,5 @@ object AssetLibrary {
   val fontWithSize = """([a-zA-Z_]+)-([0-9]+)""".r
 
   case class FontData(name: String, path: File)
+  case class TextureData(name: String, path: File)
 }

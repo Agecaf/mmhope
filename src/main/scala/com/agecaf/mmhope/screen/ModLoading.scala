@@ -1,10 +1,9 @@
-package com.agecaf.mmhope.menu
+package com.agecaf.mmhope.screen
 
 import better.files._
 import com.agecaf.mmhope.Mmhope
 import com.agecaf.mmhope.core.Geometry._
-import com.agecaf.mmhope.graphics.{Manager => g}
-import com.agecaf.mmhope.graphics.Screen
+import com.agecaf.mmhope.media.{Manager => g}
 import com.agecaf.mmhope.modloading.Data.AssetSet
 import com.agecaf.mmhope.modloading.ModLoader
 import com.badlogic.gdx.{Gdx, Input}
@@ -16,7 +15,7 @@ import scala.util._
 /**
   * Screen for loading a Mod.
   */
-class ModLoadingScreen(val mod: JValue, val path: File) extends Screen {
+class ModLoading(val mod: JValue, val path: File) extends Screen {
 
   override val assets = AssetSet(fonts = Set("default-42", "default-20"))
 
@@ -39,7 +38,7 @@ class ModLoadingScreen(val mod: JValue, val path: File) extends Screen {
   override def logic(δt: Float): Unit = {
 
     // Go back
-    if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) Mmhope.changeToScreen(ModsMenuScreen)
+    if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) Mmhope.changeToScreen(ModsMenu)
 
     if(!loading && !loaded && Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
       ModLoader.load(mod, path) onComplete {

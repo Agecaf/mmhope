@@ -18,7 +18,6 @@ object RuntimeCompiler {
       import scala.reflect.runtime.currentMirror
       import scala.tools.reflect.ToolBox
       val toolbox = currentMirror.mkToolBox()
-      //import toolbox.u._
 
       // Parse the source into a tree.
       val tree = toolbox.parse(src)
@@ -40,6 +39,7 @@ object RuntimeCompiler {
       |import com.agecaf.mmhope.core.BulletTypes._
       |import com.agecaf.mmhope.core.BulletMethods._
       |import com.agecaf.mmhope.modloading.Data._
+      |import com.agecaf.mmhope.graphics.{Shared => g}
       |
     """.stripMargin
 }

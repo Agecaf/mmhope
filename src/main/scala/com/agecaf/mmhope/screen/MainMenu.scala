@@ -1,16 +1,15 @@
-package com.agecaf.mmhope.menu
+package com.agecaf.mmhope.screen
 
 import com.agecaf.mmhope.Mmhope
 import com.agecaf.mmhope.core.Geometry._
-import com.agecaf.mmhope.graphics.Screen
-import com.agecaf.mmhope.graphics.{Manager => g}
+import com.agecaf.mmhope.media.{Manager => g}
 import com.agecaf.mmhope.modloading.Data.AssetSet
 import com.badlogic.gdx.{Gdx, Input}
 
 /**
   * Main Menu.
   */
-object MainMenuScreen extends Screen {
+object MainMenu extends Screen {
 
   // 0 Mods  1 Challenge  2 Practice  3 Options  4 Logs.
   var currentSelection: Int = 0
@@ -80,7 +79,7 @@ object MainMenuScreen extends Screen {
 
     // Select
     if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) currentSelection match {
-      case 0 => Mmhope.changeToScreen(ModsMenuScreen)
+      case 0 => Mmhope.changeToScreen(ModsMenu)
       case _ => ()
     }
 

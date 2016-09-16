@@ -7,6 +7,11 @@
   "levels" : ["level.scala"],
   "assets" : {
     "fonts" : [],
-    "textures" : []
+    "textures" : [
+      {
+        "name" : "bullets",
+        "path" : "bullets.png"
+      }
+    ]
   }
 }
