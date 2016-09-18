@@ -47,6 +47,9 @@ object IndexReader extends GameLogging {
     // Parse indices.
     modIndices = modPaths map {f => (f, parseIndex(f))}
 
+    // Filter mods with malformed JSONs.
+    modIndices = modIndices filter {case (_, JNothing) => false; case _ => true}
+
     infoEnd("Indexing")
   }
 
@@ -84,6 +87,9 @@ object IndexReader extends GameLogging {
 
     // Parse the File
     val indexJSON = parse(indexText)
+
+    if (indexJSON == JNothing)
+      error(s"Malformed JSON in $path: \n$indexText")
 
     infoEnd(s"Parsing $path")
 

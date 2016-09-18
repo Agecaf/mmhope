@@ -22,7 +22,7 @@ object MainMenu extends Screen {
   /**
     * See [[Screen]]
     */
-  override def render(δt: Float, center: Placement, alphaMultiplier: Float): Unit = {
+  override def render(center: Placement, alphaMultiplier: Float): Unit = {
 
     val top = center sideways 0.55 forward -0.3
 
@@ -79,7 +79,8 @@ object MainMenu extends Screen {
 
     // Select
     if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) currentSelection match {
-      case 0 => Mmhope.changeToScreen(ModsMenu)
+      case 0 => Mmhope.changeToScreen(new Transition('left, this, ModsMenu, 0.3))
+      case 2 => Mmhope.changeToScreen(new Transition('left, this, Practice, 0.3))
       case _ => ()
     }
 

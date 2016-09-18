@@ -39,7 +39,7 @@ object RuntimeCompiler {
       |import com.agecaf.mmhope.core.BulletTypes._
       |import com.agecaf.mmhope.core.BulletMethods._
       |import com.agecaf.mmhope.modloading.Data._
-      |import com.agecaf.mmhope.graphics.{Shared => g}
+      |import com.agecaf.mmhope.media.{Shared => g}
       |
     """.stripMargin
 }

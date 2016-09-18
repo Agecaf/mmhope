@@ -20,17 +20,16 @@ abstract class Screen {
 
   /**
     * Al rendering of the screen should be here.
-    * @param dt the delta time between frames.
     * @param center the central placement, for the superscreen's use.
     * @param alphaMultiplier An alpha multiplier, for the superscreen's use.
     */
-  def render(dt: Float, center: Placement, alphaMultiplier: Float): Unit = {}
+  def render(center: Placement, alphaMultiplier: Float): Unit = {}
 
   /**
     * Any dealing with user input should be here.
     *
     * This method is here so that superscreens can cut input.
-    * @param dt
+    * @param dt The change of time between frames.
     */
   def logic(dt: Float): Unit = {}
 

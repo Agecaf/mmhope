@@ -20,6 +20,7 @@ object Geometry {
 
   // Implicit conversions.
   implicit def DoubleToFloat(x: Double): Float = x.toFloat
+  implicit def DoubleRectToFloatRect(r: Rect[Double]): Rect[Float] = Rect[Float](r.x, r.y, r.w, r.h)
   implicit def PlacementToMatrix3(p: Placement): Matrix3 = p.matrix3
   implicit def PlacementToMatrix4(p: Placement): Matrix4 = p.matrix4
   implicit def PoseToMatrix3(p: Pose): Matrix3 = p.matrix3

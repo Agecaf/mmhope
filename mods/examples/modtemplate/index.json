@@ -1,8 +1,8 @@
 {
   "id" : "examples-modtemplate",
   "name" : "Mod Template",
-  "author" : "Agecaf",
-  "description" : "Template for Mods.",
+  "author" : "",
+  "description" : "",
   "libs" : [],
   "levels" : ["level.scala"],
   "assets" : {

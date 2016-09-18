@@ -1,6 +1,7 @@
 package com.agecaf.mmhope.media
 
 import better.files._
+import com.agecaf.mmhope.utils.GameLogging
 import com.badlogic.gdx.files.FileHandle
 import com.badlogic.gdx.graphics.Pixmap.Format
 import com.badlogic.gdx.graphics.{Color, Pixmap, Texture}
@@ -8,6 +9,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import org.json4s._
+import org.json4s.native.JsonMethods._
+import scala.language.postfixOps
 import com.agecaf.mmhope.utils.LibGDXImplicits._
 
 /**
@@ -15,7 +18,7 @@ import com.agecaf.mmhope.utils.LibGDXImplicits._
   *
   * This is not responsible for disposing of assets!
   */
-object AssetLibrary {
+object AssetLibrary extends GameLogging {
 
   var definedFonts: Map[String, FontData] = Map()
   var definedTextures: Map[String, TextureData] = Map()
@@ -74,19 +77,33 @@ object AssetLibrary {
     */
   def defineAssets(data: JValue, rootPath: File): Unit = {
     // Define fonts.
-    val JArray(fonts) = data \ "fonts" // Todo add fault tolerance
+    val fonts = data \ "fonts" match {
+      case JArray(ls) => ls
+      case JNothing => List()
+      case _ => error(s"Malformed asset JSON in $rootPath: ${render(data)}. Incorrect 'fonts' field."); List()
+    }
     fonts foreach { font =>
-      val JString(name) = font \ "name"
-      val JString(path) = font \ "path"
-      definedFonts += name -> FontData(name, rootPath / path)
+      (font \ "name", font \ "path") match {
+        case (JString(name), JString(path)) =>
+          definedFonts += name -> FontData(name, rootPath / path)
+        case _ =>
+          error(s"Malformed font JSON in $rootPath: ${render(font)}. Missing 'name' and/or 'path'.")
+      }
     }
 
     // Define Textures.
-    val JArray(textures) = data \ "textures"
+    val textures = data \ "textures" match {
+      case JArray(ls) => ls
+      case JNothing => List()
+      case _ => error(s"Malformed asset JSON in $rootPath: ${render(data)}. Incorrect 'textures' field."); List()
+    }
     textures foreach { texture =>
-      val JString(name) = texture \ "name"
-      val JString(path) = texture \ "path"
-      definedTextures += name -> TextureData(name, rootPath / path)
+      (texture \ "name", texture \ "path") match {
+        case (JString(name), JString(path)) =>
+          definedTextures += name -> TextureData(name, rootPath / path)
+        case _ =>
+          error(s"Malformed texture JSON in $rootPath: ${render(texture)}. Missing 'name' and/or 'path'.")
+      }
     }
   }
 

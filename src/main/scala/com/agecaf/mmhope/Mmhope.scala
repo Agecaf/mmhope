@@ -92,7 +92,6 @@ object Mmhope extends Game with GameLogging {
       // Render the current screen.
       // This also contains any frame logic.
       currentScreen.render(
-        dt = dt,
         center = Placement(Point(0.0, 0.0), 0.0),
         alphaMultiplier = 1
       )
