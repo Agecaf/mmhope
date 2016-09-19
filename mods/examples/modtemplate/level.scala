@@ -1,6 +1,6 @@
 
 val ballSourceRect = Rect(0, 0, 20, 20)
-val smallRect = Rect(-0.1, -0.1, 0.2, 0.2)
+val smallRect = Rect(-0.01, -0.01, 0.02, 0.02)
 
 val ballBullet: StaticBullet =
   StaticBullet(
@@ -13,7 +13,7 @@ val ballBullet: StaticBullet =
       )
     },
     isHitting = {(p: Placement, pt: Point) =>
-      false
+        (p.x - pt.x) * (p.x - pt.x) + (p.y - pt.y) * (p.y - pt.y) < 0.001
     }
   )
 
@@ -24,7 +24,7 @@ val mainBullet = Bullet(
     ballBullet.render(center rotate (t * 0.2) forward (0.2))
   },
   isHitting = {(t: Time, pt: Point) =>
-    false
+    ballBullet.isHitting(center rotate (t * 0.2) forward (0.2), pt)
   }
 )
 

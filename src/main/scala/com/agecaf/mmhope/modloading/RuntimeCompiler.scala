@@ -1,7 +1,7 @@
 package com.agecaf.mmhope.modloading
 
 import com.agecaf.mmhope.modloading.Data.Level
-
+import com.agecaf.mmhope.core.Character
 import scala.concurrent.Future
 import scala.concurrent.blocking
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -24,7 +24,6 @@ object RuntimeCompiler {
 
       // Compile tree with toolbox.
       val compiled = toolbox.compile(tree)
-
       // Return compiled code.
       compiled
     }
@@ -34,12 +33,29 @@ object RuntimeCompiler {
     parseAndCompile(levelPrefix + src) map (_().asInstanceOf[Level])
   }
 
+  def compileCharacter(src: String): Future[Character] = {
+    parseAndCompile(characterPrefix + src) map (_().asInstanceOf[Character])
+  }
+
   val levelPrefix =
     """import com.agecaf.mmhope.core.Geometry._
       |import com.agecaf.mmhope.core.BulletTypes._
       |import com.agecaf.mmhope.core.BulletMethods._
       |import com.agecaf.mmhope.modloading.Data._
       |import com.agecaf.mmhope.media.{Shared => g}
+      |import scala.math._
+      |
+    """.stripMargin
+
+  val characterPrefix =
+    """import com.agecaf.mmhope.core.Geometry._
+      |import com.agecaf.mmhope.core.BulletTypes._
+      |import com.agecaf.mmhope.core.BulletMethods._
+      |import com.agecaf.mmhope.core.Character
+      |import com.agecaf.mmhope.modloading.Data._
+      |import com.agecaf.mmhope.media.{Shared => g}
+      |import scala.math._
+      |import com.badlogic.gdx.{Gdx, Input}
       |
     """.stripMargin
 }

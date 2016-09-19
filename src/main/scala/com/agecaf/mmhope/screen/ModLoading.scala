@@ -46,7 +46,7 @@ class ModLoading(val mod: JValue, val path: File) extends Screen with GameLoggin
     if(!loading && !loaded && Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
       ModLoader.load(mod, path) onComplete {
         case Success(_) => loaded = true; loading = false
-        case Failure(t) => error(t); loading = false;
+        case Failure(t) => throw t; error(t); loading = false;
       }
     }
   }

@@ -28,11 +28,17 @@ object ModLoader extends GameLogging {
     // Compile and store levels.
     val JArray(levels) = data \ "levels"
     val levelFutures = levels map { case JString(path) =>
-      compileLevel((rootPath / path).lines mkString "\n").map (LevelLibrary.storeLevel(_, modId))
+      compileLevel((rootPath / path).lines mkString "\n") map (LevelLibrary.storeLevel(_, modId))
+    }
+
+    // Compile and store characters.
+    val JArray(characters) = data \ "characters"
+    val characterFutures = characters map { case JString(path) =>
+      compileCharacter((rootPath / path).lines mkString "\n") map (CharacterLibrary.storeCharacter(_, modId))
     }
 
     // Return the joint future of the level creation and storage.
-    Future.sequence(levelFutures) map (_ => infoEnd(s"loading mod $modId"): Unit)
+    Future.sequence(levelFutures ++ characterFutures) map (_ => infoEnd(s"loading mod $modId"): Unit)
   }
 
 

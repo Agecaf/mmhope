@@ -5,6 +5,7 @@
   "description" : "",
   "libs" : [],
   "levels" : ["level.scala"],
+  "characters" : ["character.scala"],
   "assets" : {
     "fonts" : [],
     "textures" : [
