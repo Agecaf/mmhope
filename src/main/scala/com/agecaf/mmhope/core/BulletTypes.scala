@@ -24,6 +24,16 @@ object BulletTypes {
   type RenderAtTime = (Time) => Unit
   type IsHittingAtTime = (Time, Point) => Boolean
 
-  case class StaticBullet(render: RenderAtPlace, isHitting: IsHittingAtPlace)
+  case class StaticBullet(render: RenderAtPlace, isHitting: IsHittingAtPlace) {
+    def withMovement (mov: Movement): Bullet =
+      Bullet(
+        render = {(t) =>
+          render(mov(t))
+        },
+        isHitting = {(t, p) =>
+          isHitting(mov(t), p)
+        }
+      )
+  }
   case class Bullet(render: RenderAtTime, isHitting: IsHittingAtTime)
 }

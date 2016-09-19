@@ -17,6 +17,12 @@ val ballBullet: StaticBullet =
     }
   )
 
+val mainBull(p: Pose) = group {
+  for (i <- 1 to 20) yield {
+    ballBullet withMovement bezier(0.2, 0.2)(p, p rotate i forward 0.3 rotate i)
+  }
+}
+
 val center = Placement(Point(0, 0), 0)
 
 val mainBullet = Bullet(
@@ -33,6 +39,6 @@ Level(
     name = "Level",
     duration = 10.0,
     background = {t => ()},
-    bullet = mainBullet,
+    bullet = mainBull,
     assets = AssetSet(textures = Set("bullets"))
   )

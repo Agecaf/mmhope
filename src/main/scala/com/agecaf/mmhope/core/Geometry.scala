@@ -36,13 +36,34 @@ object Geometry {
     def translate(dx: Float, dy: Float): Point =
       Point(x + dx, y + dy)
 
+    def + (vec: Vec2) = Point(x + vec.x, y + vec.y)
+    def toVec2 = Vec2(x, y)
+    def to (other: Point) = Vec2(other.x - x, other.y - y)
+
     def sqrDistFrom(other: Point): Float =
       (x - other.x)*(x - other.x)+(y - other.y)*(y - other.y)
 
   }
 
   val originPt: Point = Point(0, 0)
-  val centerPt: Point = Point(0.5, 0.5)
+
+  case class Vec2(x: Float, y: Float) {
+    def + (other: Vec2) = Vec2(x + other.x , y + other.y)
+    def - (other: Vec2) = Vec2(x - other.x , y - other.y)
+    def * (scalar: Float) = Vec2(x * scalar, y * scalar)
+    def dot (other: Vec2) = x * other.x + y * other.y
+    def toPoint: Point = Point(x, y)
+    def orientation: Float = atan2(x, y)
+    def abs: Float = sqrt(x*x + y*y)
+  }
+
+  def distance(p1: Point, p2: Point) = {
+    sqrt((p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y))
+  }
+
+  def distance(v1: Vec2, v2: Vec2) = {
+    sqrt((v1.x - v2.x)*(v1.x - v2.x) + (v1.y - v2.y)*(v1.y - v2.y))
+  }
 
   /**
     * A frame of reference with a position and an orientation.
@@ -78,7 +99,8 @@ object Geometry {
         orientation                 //,
       )
 
-    // Towards Point
+    def towards (p: Point): Placement =
+      Placement(point, (point to p).orientation)
 
     def matrix3: Matrix3 =
       new Matrix3().setToTranslation(x, y).rotateRad(orientation)
@@ -90,41 +112,35 @@ object Geometry {
   /**
     * A frame of reference with a position, an orientation and a time offset.
     *
-    * @param placementOpt Its position and orientation, if defined.
+    * @param placement Its position and orientation.
     * @param timeOffset Its time offset.
     */
-  case class Pose(placementOpt: Option[Placement], timeOffset: Time) {
-    val isDefined = placementOpt.isDefined
-    val placement = placementOpt getOrElse Placement(Point(0, 0), 0)
+  case class Pose(placement: Placement, timeOffset: Time) {
     val x = placement.x
     val y = placement.y
     val point = placement.point
     val orientation = placement.orientation
 
     def translate(dx: Float, dy: Float): Pose =
-      Pose(placementOpt map (_ translate (dx, dy)), timeOffset)
+      Pose(placement translate (dx, dy), timeOffset)
 
     def rotate(theta: Float): Pose =
-      Pose(placementOpt map (_ rotate theta), timeOffset)
+      Pose(placement rotate theta, timeOffset)
 
     def forward(d: Float): Pose =
-      Pose(placementOpt map (_ forward d), timeOffset)
+      Pose(placement forward d, timeOffset)
 
     def sideways(d: Float): Pose =
-      Pose(placementOpt map (_ sideways d), timeOffset)
+      Pose(placement sideways d, timeOffset)
 
     def delay(dt: Time): Pose =
-      Pose(placementOpt, timeOffset + dt)
+      Pose(placement, timeOffset + dt)
 
-    // Towards Option[Point]
+    def towards (p: Point): Pose =
+      Pose(placement towards p, timeOffset)
 
     def matrix3: Matrix3 = placement.matrix3
     def matrix4: Matrix4 = placement.matrix4
-  }
-
-  object Pose {
-    def apply(placement: Placement, timeOffset: Time): Pose =
-      Pose(Some(placement), timeOffset)
   }
 
   case class Rect[T](x: T, y: T, w: T, h: T)
