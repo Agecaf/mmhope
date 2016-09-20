@@ -3,6 +3,8 @@ package com.agecaf.mmhope.core
 import Geometry._
 import BulletTypes._
 import scala.language.postfixOps
+import scala.math._
+
 
 /**
   * Methods used to create, join and transform bullets.
@@ -29,6 +31,9 @@ object BulletMethods {
       }
     )
 
+  def groupList(bullets: Bullet*): Bullet =
+    group(bullets)
+
   def after(pose: Pose)(bullet: Bullet): Bullet =
     Bullet(
       render = {(t) =>
@@ -49,6 +54,27 @@ object BulletMethods {
       }
     )
 
+  def lifespan(time: Time)(pose: Pose)(bullet: Bullet) : Bullet =
+    Bullet(
+      render = {(t) =>
+        if (t < pose.timeOffset + time && t > pose.timeOffset) bullet render t
+      },
+      isHitting = {(t, p) =>
+        if (t < pose.timeOffset + time && t > pose.timeOffset) bullet isHitting (t, p) else false
+      }
+    )
+
+  def updating (b: => Bullet): Bullet =
+    Bullet(
+      render = {(t) => b.render(t)},
+      isHitting =  {(t, p) => b.isHitting(t, p)}
+    )
+
+  val nullBullet: Bullet =
+    Bullet(
+      render = {t => ()},
+      isHitting = {(t, p) => false}
+    )
 
 
   // TODO implement fade-ins, fade-outs
@@ -72,6 +98,12 @@ object BulletMethods {
       .forward (distance(from.point, to.point) * (t - from.timeOffset) / (to.timeOffset - from.timeOffset))
       .placement
 
+  def linearInterpolationFunc(f: Float => Float)(from: Pose, to: Pose): Movement = (t: Time) =>
+    from
+      .towards (to.point)
+      .forward (distance(from.point, to.point) * f((t - from.timeOffset) / (to.timeOffset - from.timeOffset)))
+      .placement
+
   def bezier(fromSpeed: Float, toSpeed: Float)(from: Pose, to: Pose): Movement = {(t: Time) =>
     val tt = (t - from.timeOffset) / (to.timeOffset - from.timeOffset)
     val mt = 1 - tt
@@ -84,9 +116,10 @@ object BulletMethods {
     Placement(pt.toPoint, or.orientation)
   }
 
-  val nullBullet: Bullet =
-    Bullet(
-      render = {t => ()},
-      isHitting = {(t, p) => false}
-    )
+  def combine(movement1: Movement, movement2: Movement)(center: Point = Point(0, 0)): Movement = {(t:Time) =>
+    val o = center.toVec2
+    val p0 = movement1(t).point.toVec2 + movement2(t).point.toVec2 - o
+    val p1 = movement1(t + 0.1).point.toVec2 + movement2(t + 0.1).point.toVec2 - o
+    Placement(p0.toPoint, (p1 - p0).orientation)
+  }
 }

@@ -27,7 +27,11 @@ object CharacterPosition {
     if (t > lastTime) {
       val i: Int = t.floor.toInt
       if (i > lastTimeInt) {
-        pastPositionLists(lastTimeInt) = currentSecond
+        if (pastPositionLists.length <= lastTimeInt)
+          pastPositionLists += currentSecond
+        else {
+          pastPositionLists(lastTimeInt) = currentSecond
+        }
         lastTimeInt = i
         currentSecond = List()
       }
@@ -54,7 +58,7 @@ object CharacterPosition {
     * @param t the time.
     * @return the position of the character.
     */
-  def getAt(t: Time): Point = {
+  def at(t: Time): Point = {
     // Get the current one if they want info from the future.
     if (t > lastTime) return lastPos
 

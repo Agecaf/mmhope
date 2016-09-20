@@ -53,16 +53,16 @@ object Geometry {
     def * (scalar: Float) = Vec2(x * scalar, y * scalar)
     def dot (other: Vec2) = x * other.x + y * other.y
     def toPoint: Point = Point(x, y)
-    def orientation: Float = atan2(x, y)
+    def orientation: Float = atan2(y, x)
     def abs: Float = sqrt(x*x + y*y)
   }
 
   def distance(p1: Point, p2: Point) = {
-    sqrt((p1.x - p2.x)*(p1.x - p2.x) + (p1.y - p2.y)*(p1.y - p2.y))
+    hypot(p1.x - p2.x, p1.y - p2.y)
   }
 
   def distance(v1: Vec2, v2: Vec2) = {
-    sqrt((v1.x - v2.x)*(v1.x - v2.x) + (v1.y - v2.y)*(v1.y - v2.y))
+    hypot(v1.x - v2.x, v1.y - v2.y)
   }
 
   /**
@@ -102,6 +102,19 @@ object Geometry {
     def towards (p: Point): Placement =
       Placement(point, (point to p).orientation)
 
+    def towards (s: Symbol): Placement =
+      Placement(point, s match {
+        case 'N => Pi*0.5
+        case 'W => Pi
+        case 'S => Pi*1.5
+        case 'E => 0
+        case 'NE => Pi*0.25
+        case 'NW => Pi*0.75
+        case 'SW => Pi*1.25
+        case 'SE => Pi*1.75
+        case _ => orientation
+      })
+
     def matrix3: Matrix3 =
       new Matrix3().setToTranslation(x, y).rotateRad(orientation)
 
@@ -138,6 +151,12 @@ object Geometry {
 
     def towards (p: Point): Pose =
       Pose(placement towards p, timeOffset)
+
+    def towards (s: Symbol): Pose =
+      Pose(timeOffset = timeOffset, placement = s match {
+        case 'player => placement towards CharacterPosition.at(timeOffset)
+        case _ => placement towards s
+      })
 
     def matrix3: Matrix3 = placement.matrix3
     def matrix4: Matrix4 = placement.matrix4

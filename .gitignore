@@ -18,3 +18,6 @@ gen/
 # Assets.
 *.png
 *.ttf
+*.mp3
+*.ogg
+*.wav

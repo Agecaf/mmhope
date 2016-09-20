@@ -56,6 +56,7 @@ object RuntimeCompiler {
       |import com.agecaf.mmhope.media.{Shared => g}
       |import scala.math._
       |import com.badlogic.gdx.{Gdx, Input}
+      |import com.agecaf.mmhope.core.CharacterPosition
       |
     """.stripMargin
 }

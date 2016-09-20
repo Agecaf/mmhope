@@ -8,8 +8,6 @@ new Character("Template") {
     levelOpt match {
       case Some(level) =>
         level.background.apply(t)
-        level.bullet.render(t - 1.2)
-        level.bullet.render(t - 0.1)
         level.bullet.render(t)
 
       case None =>
@@ -25,22 +23,41 @@ new Character("Template") {
   }
 
   def logic(dt: Float): Unit = {
-    // Increase time.
-    t += dt
+    if (!Gdx.input.isKeyPressed(Input.Keys.X)) {
+      // Increase time.
+      t += dt
 
-    // Move player.
-    if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) playerPosition = playerPosition sideways speed*dt
-    if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)) playerPosition = playerPosition sideways -speed*dt
-    if(Gdx.input.isKeyPressed(Input.Keys.UP)) playerPosition = playerPosition forward speed*dt
-    if(Gdx.input.isKeyPressed(Input.Keys.DOWN)) playerPosition = playerPosition forward -speed*dt
+      val s = if(Gdx.input.isKeyPressed(Input.Keys.Z)) speed*0.5 else speed
 
-    // Check if we're in a level.
-    levelOpt match {
-      case Some(level) =>
-        // Check if it is hitting.
-        if (level.bullet isHitting (t, playerPosition.point)) { println("OUCH!") }
-      case None => ()
+      // Move player.
+      if(Gdx.input.isKeyPressed(Input.Keys.LEFT))
+        playerPosition = playerPosition sideways s*dt
+      if(Gdx.input.isKeyPressed(Input.Keys.RIGHT))
+        playerPosition = playerPosition sideways -s*dt
+      if(Gdx.input.isKeyPressed(Input.Keys.UP))
+        playerPosition = playerPosition forward s*dt
+      if(Gdx.input.isKeyPressed(Input.Keys.DOWN))
+        playerPosition = playerPosition forward -s*dt
+
+      if(Gdx.input.isKeyJustPressed(Input.Keys.R)) t = 0
+
+      // Check if we're in a level.
+      levelOpt match {
+        case Some(level) =>
+          // Check if it is hitting.
+          if (level.bullet isHitting (t, playerPosition.point)) { println("OUCH!") }
+        case None => ()
+      }
+
+      // Update player position
+      CharacterPosition.update(t, playerPosition.point)
     }
+
+    else {
+      t -= dt
+      playerPosition = playerPosition copy (point = CharacterPosition.at(t))
+    }
+
   }
 
   var playerPosition: Placement = Placement(Point(0, 0), Pi / 2)
