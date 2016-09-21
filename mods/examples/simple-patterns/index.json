@@ -1,0 +1,18 @@
+{
+  "id" : "examples-simple-patterns",
+  "name" : "Simple Patterns",
+  "author" : "",
+  "description" : "Examples of simple bullet patterns",
+  "libs" : [],
+  "levels" : ["circular.scala"],
+  "characters" : ["character.scala"],
+  "assets" : {
+    "fonts" : [],
+    "textures" : [
+      {
+        "name" : "bullets",
+        "path" : "bullets.png"
+      }
+    ]
+  }
+}

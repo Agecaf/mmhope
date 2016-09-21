@@ -53,7 +53,8 @@ def mainBullet = group {
 Level(
     name = "Level",
     duration = 10.0,
+    music = "emotional",
     background = {t => ()},
     bullet = mainBullet,
-    assets = AssetSet(textures = Set("bullets"))
+    assets = AssetSet(textures = Set("bullets"), music = Set("emotional"))
   )

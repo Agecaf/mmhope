@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.{BitmapFont, SpriteBatch}
 import com.agecaf.mmhope.media.AssetLibrary
 import com.agecaf.mmhope.core.Geometry._
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.audio.Music
 import com.badlogic.gdx.graphics.Pixmap.Format
 import com.badlogic.gdx.math.Matrix4
 import com.badlogic.gdx.utils.viewport.{FitViewport, Viewport}
@@ -29,6 +30,7 @@ object Manager extends GameLogging {
 
   var fonts: Map[String, BitmapFont] = Map()
   var textures: Map[String, Texture] = Map()
+  var music: Map[String, Music] = Map()
 
   /**
     * Creates the necessary graphic objects for the whole execution of the program.
@@ -81,9 +83,11 @@ object Manager extends GameLogging {
 
     unusedAssets.fonts foreach {fonts(_).dispose()}
     unusedAssets.textures foreach {textures(_).dispose()}
+    unusedAssets.music foreach {id => music(id).stop(); music(id).dispose()}
 
     fonts = fonts filter {case (id, font) => assets.fonts contains id}
     textures = textures filter {case (id, texture) => assets.textures contains id}
+    music = music filter {case (id, music) => assets.music contains id}
 
     // Add new assets.
     val newAssets = assets -- oldAssets
@@ -96,6 +100,11 @@ object Manager extends GameLogging {
     textures ++=
       (newAssets.textures map {id =>
         id -> AssetLibrary.loadTexture(id)
+      }).toMap
+
+    music ++=
+      (newAssets.music map {id =>
+        id -> AssetLibrary.loadMusic(id)
       }).toMap
 
     debugEnd("Loading assets com.agecaf.mmhope.graphics.Manager")
@@ -183,5 +192,14 @@ object Manager extends GameLogging {
       sourceRect.w, sourceRect.h,
       flipX, flipY
     )
+  }
+
+  def playMusic(musicId: String): Unit = {
+    music(musicId).setLooping(true)
+    music(musicId).play()
+  }
+
+  def stopMusic(musicId: String): Unit = {
+    music(musicId).stop()
   }
 }

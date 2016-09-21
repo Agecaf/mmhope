@@ -41,19 +41,19 @@ object MainMenu extends Screen {
       alphaMultiplier
     )
 
-    // Challenge
+    /* Challenge
     g.text("default-42", "Challenge",
+      menuPos forward (if(currentSelection == 1) 0.1 else 0) sideways -0.15,
+      alphaMultiplier
+    )*/
+
+    // Practice
+    g.text("default-42", "Levels",
       menuPos forward (if(currentSelection == 1) 0.1 else 0) sideways -0.15,
       alphaMultiplier
     )
 
-    // Practice
-    g.text("default-42", "Practice",
-      menuPos forward (if(currentSelection == 2) 0.1 else 0) sideways -0.3,
-      alphaMultiplier
-    )
-
-    // Options
+    /* Options
     g.text("default-42", "Options",
       menuPos forward (if(currentSelection == 3) 0.1 else 0) sideways -0.45,
       alphaMultiplier
@@ -63,7 +63,7 @@ object MainMenu extends Screen {
     g.text("default-42", "Logs",
       menuPos forward (if(currentSelection == 4) 0.1 else 0) sideways -0.6,
       alphaMultiplier
-    )
+    )*/
   }
 
   /**
@@ -74,16 +74,14 @@ object MainMenu extends Screen {
     if(Gdx.input.isKeyJustPressed(Input.Keys.UP) && currentSelection > 0)
       currentSelection -= 1
 
-    if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN) && currentSelection < 4)
+    if(Gdx.input.isKeyJustPressed(Input.Keys.DOWN) && currentSelection < 1)
       currentSelection += 1
 
     // Select
     if(Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) currentSelection match {
       case 0 => Mmhope.changeToScreen(new Transition('left, this, ModsMenu, 0.3))
-      case 2 => Mmhope.changeToScreen(new Transition('left, this, Practice, 0.3))
+      case 1 => Mmhope.changeToScreen(new Transition('left, this, Practice, 0.3))
       case _ => ()
     }
-
   }
-
 }

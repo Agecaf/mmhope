@@ -10,8 +10,11 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator.FreeTypeFontParameter
 import org.json4s._
 import org.json4s.native.JsonMethods._
+
 import scala.language.postfixOps
 import com.agecaf.mmhope.utils.LibGDXImplicits._
+import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.audio.Music
 
 /**
   * Stores construction information for all the assets loaded.
@@ -22,6 +25,7 @@ object AssetLibrary extends GameLogging {
 
   var definedFonts: Map[String, FontData] = Map()
   var definedTextures: Map[String, TextureData] = Map()
+  var definedMusic: Map[String, MusicData] = Map()
 
   /**
     * Loads a font given its id.
@@ -68,6 +72,14 @@ object AssetLibrary extends GameLogging {
     }
   }
 
+  def loadMusic(musicId: String): Music = {
+    // Texture in library
+    if (definedMusic contains musicId)
+      Gdx.audio.newMusic(definedMusic(musicId).path)
+    else
+      Gdx.audio.newMusic(definedMusic("emotional").path)
+  }
+
   /** Adds assets to the asset library.
     *
     * Note they are not actually loaded, only defined.
@@ -105,6 +117,24 @@ object AssetLibrary extends GameLogging {
           error(s"Malformed texture JSON in $rootPath: ${render(texture)}. Missing 'name' and/or 'path'.")
       }
     }
+
+    // Define music.
+    val music = data \ "music" match {
+      case JArray(ls) => ls
+      case JNothing => List()
+      case _ => error(s"Malformed asset JSON in $rootPath: ${render(data)}. Incorrect 'music' field."); List()
+    }
+    music foreach { song =>
+      println(song)
+      (song \ "name", song \ "path") match {
+        case (JString(name), JString(path)) =>
+          definedMusic += name -> MusicData(name, rootPath / path)
+        case _ =>
+          error(s"Malformed music JSON in $rootPath: ${render(song)}. Missing 'name' and/or 'path'.")
+
+      }
+    }
+
   }
 
   // Regex patterns
@@ -112,4 +142,5 @@ object AssetLibrary extends GameLogging {
 
   case class FontData(name: String, path: File)
   case class TextureData(name: String, path: File)
+  case class MusicData(name: String, path: File)
 }

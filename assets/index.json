@@ -5,5 +5,11 @@
       "path" : "fonts/Tuffy.ttf"
     }
   ],
-  "textures" : []
+  "textures" : [],
+  "music": [
+    {
+      "name" : "emotional",
+      "path" : "music/Next to You.mp3"
+    }
+  ]
 }

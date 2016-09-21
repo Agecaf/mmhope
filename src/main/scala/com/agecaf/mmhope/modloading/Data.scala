@@ -12,43 +12,50 @@ object Data {
   case class AssetSet(
     fonts: Set[String] = Set(),
     textures: Set[String] = Set(),
-    sounds: Set[String] = Set()
+    sounds: Set[String] = Set(),
+    music: Set[String] = Set()
   ) {
     def ++ (other: AssetSet): AssetSet =
       AssetSet(
         fonts ++ other.fonts,
         textures ++ other.textures,
-        sounds ++ other.sounds
+        sounds ++ other.sounds,
+        music ++ other.music
       )
     def -- (other: AssetSet): AssetSet =
       AssetSet(
         fonts -- other.fonts,
         textures -- other.textures,
-        sounds -- other.sounds
+        sounds -- other.sounds,
+        music -- other.music
       )
     def | (other: AssetSet): AssetSet =
       AssetSet(
         fonts | other.fonts,
         textures | other.textures,
-        sounds | other.sounds
+        sounds | other.sounds,
+        music | other.music
       )
     def & (other: AssetSet): AssetSet =
       AssetSet(
         fonts & other.fonts,
         textures & other.textures,
-        sounds & other.sounds
+        sounds & other.sounds,
+        music & other.music
       )
     def &~ (other: AssetSet): AssetSet =
       AssetSet(
         fonts &~ other.fonts,
         textures &~ other.textures,
-        sounds &~ other.sounds
+        sounds &~ other.sounds,
+        music &~ other.music
       )
   }
 
   case class Level(
     name: String,
     duration: Float,
+    music: String,
     background: RenderAtTime,
     bullet: Bullet,
     assets: AssetSet

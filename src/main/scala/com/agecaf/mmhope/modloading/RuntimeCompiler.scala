@@ -8,16 +8,17 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 object RuntimeCompiler {
 
+  // Get Mirror and toolbox.
+  import scala.reflect.runtime.currentMirror
+  import scala.tools.reflect.ToolBox
+  val toolbox = currentMirror.mkToolBox()
+
   /**
     * Parses and Compiles a string, returning the returned code ready to be run.
     * @param src the source.
     * @return A method to call to run the compiled code.
     */
   def parseAndCompile(src: String): Future[() => Any] = Future { blocking {
-      // Get Mirror and toolbox.
-      import scala.reflect.runtime.currentMirror
-      import scala.tools.reflect.ToolBox
-      val toolbox = currentMirror.mkToolBox()
 
       // Parse the source into a tree.
       val tree = toolbox.parse(src)

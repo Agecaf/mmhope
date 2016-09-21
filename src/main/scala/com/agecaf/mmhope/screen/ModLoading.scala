@@ -5,7 +5,7 @@ import com.agecaf.mmhope.Mmhope
 import com.agecaf.mmhope.core.Geometry._
 import com.agecaf.mmhope.media.{Manager => g}
 import com.agecaf.mmhope.modloading.Data.AssetSet
-import com.agecaf.mmhope.modloading.ModLoader
+import com.agecaf.mmhope.modloading.{ModLoader, RuntimeCompiler}
 import com.agecaf.mmhope.utils.GameLogging
 import com.badlogic.gdx.{Gdx, Input}
 import org.json4s._
@@ -46,7 +46,12 @@ class ModLoading(val mod: JValue, val path: File) extends Screen with GameLoggin
     if(!loading && !loaded && Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)) {
       ModLoader.load(mod, path) onComplete {
         case Success(_) => loaded = true; loading = false
-        case Failure(t) => throw t; error(t); loading = false;
+        case Failure(t) =>
+          error(t)
+          loading = false
+          println(t)
+          println(RuntimeCompiler.toolbox.frontEnd.infos)
+          throw t
       }
     }
   }

@@ -9,6 +9,9 @@ DEFAULT ASSETS
 - Tuffy.ttf is a Public Domain font. Thanks to the awesome people behind his font!
 http://tulrich.com/fonts/
 
+- Next to You.mp3 is a CC0 piece by Joth. "Another emotional-type piece".
+http://opengameart.org/content/next-to-you
+
 ABOUT MODS
 ==========
 
