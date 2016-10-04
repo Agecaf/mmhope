@@ -125,7 +125,6 @@ object AssetLibrary extends GameLogging {
       case _ => error(s"Malformed asset JSON in $rootPath: ${render(data)}. Incorrect 'music' field."); List()
     }
     music foreach { song =>
-      println(song)
       (song \ "name", song \ "path") match {
         case (JString(name), JString(path)) =>
           definedMusic += name -> MusicData(name, rootPath / path)

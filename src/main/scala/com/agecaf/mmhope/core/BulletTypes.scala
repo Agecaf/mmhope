@@ -19,8 +19,6 @@ object BulletTypes {
   type RenderAtPlace = (Placement) => Unit
   type IsHittingAtPlace = (Placement, Point) => Boolean
 
-  type Movement = Time => Placement
-
   type RenderAtTime = (Time) => Unit
   type IsHittingAtTime = (Time, Point) => Boolean
 

@@ -8,6 +8,7 @@ import scala.concurrent.Future
 import scala.concurrent.ExecutionContext.Implicits.global
 import com.agecaf.mmhope.modloading.RuntimeCompiler._
 import com.agecaf.mmhope.utils.GameLogging
+import org.json4s.JsonAST.JValue
 
 object ModLoader extends GameLogging {
 
@@ -26,15 +27,21 @@ object ModLoader extends GameLogging {
     AssetLibrary.defineAssets(data \ "assets", rootPath) // TODO pass id to asset library.
 
     // Compile and store levels.
-    val JArray(levels) = data \ "levels"
+    val levels = data \ "levels" match {
+      case JArray(ls) => ls
+      case _ => List()
+    }
     val levelFutures = levels map { case JString(path) =>
-      compileLevel((rootPath / path).lines mkString "\n") map (LevelLibrary.storeLevel(_, modId))
+      compileLevel((rootPath / path).lines mkString "\n", path) map (LevelLibrary.storeLevel(_, modId))
     }
 
     // Compile and store characters.
-    val JArray(characters) = data \ "characters"
+    val characters = data \ "characters" match {
+      case JArray(ls) => ls
+      case _ => List()
+    }
     val characterFutures = characters map { case JString(path) =>
-      compileCharacter((rootPath / path).lines mkString "\n") map (CharacterLibrary.storeCharacter(_, modId))
+      compileCharacter((rootPath / path).lines mkString "\n", path) map (CharacterLibrary.storeCharacter(_, modId))
     }
 
     // Return the joint future of the level creation and storage.

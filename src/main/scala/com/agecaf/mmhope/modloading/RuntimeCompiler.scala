@@ -2,9 +2,12 @@ package com.agecaf.mmhope.modloading
 
 import com.agecaf.mmhope.modloading.Data.Level
 import com.agecaf.mmhope.core.Character
+import com.agecaf.mmhope.modloading.Exceptions.CouldNotCompileFile
+
 import scala.concurrent.Future
 import scala.concurrent.blocking
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.tools.reflect.ToolBoxError
 
 object RuntimeCompiler {
 
@@ -18,24 +21,43 @@ object RuntimeCompiler {
     * @param src the source.
     * @return A method to call to run the compiled code.
     */
-  def parseAndCompile(src: String): Future[() => Any] = Future { blocking {
+  def parseAndCompile(src: String, path: String): Future[() => Any] = Future { blocking {
 
       // Parse the source into a tree.
-      val tree = toolbox.parse(src)
+      val tree =
+        try {
+          toolbox.parse(src)
+        } catch {
+          case e: ToolBoxError =>
+            val seq = toolbox.frontEnd.infos.map { i =>
+              s"""[$path]:${i.pos.line - prefixLines}: ${i.msg}"""
+            }
+            throw CouldNotCompileFile(path, e.message + "\n" + seq.mkString("\n"))
+        }
 
       // Compile tree with toolbox.
-      val compiled = toolbox.compile(tree)
+      val compiled =
+        try {
+          toolbox.compile(tree)
+        } catch {
+          case e: ToolBoxError =>
+            val seq = toolbox.frontEnd.infos.map { i =>
+              s"""[$path]:${i.pos.line - prefixLines}: ${i.msg}"""
+            }
+            throw CouldNotCompileFile(path, e.message + "\n" + seq.mkString("\n"))
+        }
+
       // Return compiled code.
       compiled
     }
   }
 
-  def compileLevel(src: String): Future[Level] = {
-    parseAndCompile(levelPrefix + src) map (_().asInstanceOf[Level])
+  def compileLevel(src: String, path: String): Future[Level] = {
+    parseAndCompile(levelPrefix + src, path) map (_().asInstanceOf[Level])
   }
 
-  def compileCharacter(src: String): Future[Character] = {
-    parseAndCompile(characterPrefix + src) map (_().asInstanceOf[Character])
+  def compileCharacter(src: String, path: String): Future[Character] = {
+    parseAndCompile(characterPrefix + src, path) map (_().asInstanceOf[Character])
   }
 
   val levelPrefix =
@@ -45,6 +67,11 @@ object RuntimeCompiler {
       |import com.agecaf.mmhope.modloading.Data._
       |import com.agecaf.mmhope.media.{Shared => g}
       |import scala.math._
+      |import spire.math.Complex
+      |import spire.implicits._
+      |
+      |
+      |
       |
     """.stripMargin
 
@@ -58,6 +85,10 @@ object RuntimeCompiler {
       |import scala.math._
       |import com.badlogic.gdx.{Gdx, Input}
       |import com.agecaf.mmhope.core.CharacterPosition
+      |import spire.math.Complex
+      |import spire.implicits._
       |
     """.stripMargin
+
+  val prefixLines = 10
 }

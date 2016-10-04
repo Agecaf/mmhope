@@ -2,8 +2,11 @@ package com.agecaf.mmhope.core
 
 import Geometry._
 import BulletTypes._
+import spire.math.Complex
+
 import scala.language.postfixOps
 import scala.math._
+import spire.implicits._
 
 
 /**
@@ -86,6 +89,8 @@ object BulletMethods {
   // TODO generators
 
   // Movements.
+  def static(pose: Pose): Movement = {(t: Time) => pose.placement}
+
   def linear(speed: Float)(pose: Pose) : Movement = (t: Time) =>
     pose forward ((t - pose.timeOffset) * speed) placement
 
@@ -105,21 +110,42 @@ object BulletMethods {
       .placement
 
   def bezier(fromSpeed: Float, toSpeed: Float)(from: Pose, to: Pose): Movement = {(t: Time) =>
+    val s0 = fromSpeed * (to.timeOffset - from.timeOffset) / 3
+    val s1 = toSpeed * (to.timeOffset - from.timeOffset) / 3
     val tt = (t - from.timeOffset) / (to.timeOffset - from.timeOffset)
     val mt = 1 - tt
     val p0 = from.point.toVec2
-    val p1 = (from forward fromSpeed).point.toVec2
-    val p2 = (to forward -toSpeed).point.toVec2
+    val p1 = (from forward s0).point.toVec2
+    val p2 = (to forward -s1).point.toVec2
     val p3 = to.point.toVec2
     val pt = (p0 * (mt*mt*mt)) + (p1 * (3*mt*mt*tt)) + (p2 * (3*mt*tt*tt)) + (p3 * (tt*tt*tt))
     val or = ((p1 - p0) * (3*mt*mt)) + ((p2 - p1) * (6*mt*tt)) + ((p3 - p2) * (3*tt*tt))
     Placement(pt.toPoint, or.orientation)
   }
 
-  def combine(movement1: Movement, movement2: Movement)(center: Point = Point(0, 0)): Movement = {(t:Time) =>
-    val o = center.toVec2
-    val p0 = movement1(t).point.toVec2 + movement2(t).point.toVec2 - o
-    val p1 = movement1(t + 0.1).point.toVec2 + movement2(t + 0.1).point.toVec2 - o
-    Placement(p0.toPoint, (p1 - p0).orientation)
+  def combine(movement1: AbstractMovement, movement2: AbstractMovement): AbstractMovement = {
+    (p: Pose) => {
+      (t: Time) =>
+      val o = p.point.toVec2
+      val p0 = movement1(p)(t).point.toVec2 + movement2(p)(t).point.toVec2 - o
+      val p1 = movement1(p)(t + 0.1f).point.toVec2 + movement2(p)(t + 0.1f).point.toVec2 - o
+      Placement(p0.toPoint, (p1 - p0).orientation)
+    }
+  }
+
+  def compose(movement1: AbstractMovement, movement2: AbstractMovement)(t: Time): AbstractMovement = {
+    (p: Pose) => {
+      (tt: Time) => movement2(p move(movement1, t))(tt)
+    }
+  }
+
+  def fromComplex(f: Complex[Float] => Complex[Float])(pose: Pose): Movement = {(t:Time) =>
+    val tt = t - pose.timeOffset
+    val z = f(tt)
+    val dz = f(tt + 0.1f) - z
+    Placement(
+      pose.placement forward z.real sideways z.imag point,
+      pose.orientation + Vec2(dz.real, dz.imag).orientation
+    )
   }
 }

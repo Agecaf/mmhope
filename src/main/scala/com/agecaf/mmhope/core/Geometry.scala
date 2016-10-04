@@ -4,6 +4,8 @@ package com.agecaf.mmhope.core
 import com.badlogic.gdx.graphics.Color
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer
 import com.badlogic.gdx.math.{Matrix3, Matrix4}
+import spire.math.Complex
+import spire.implicits._
 
 import scala.math._
 import scala.language.implicitConversions
@@ -17,6 +19,11 @@ import scala.language.implicitConversions
   */
 object Geometry {
   type Time = Float
+  type Movement = Time => Placement
+  type AbstractMovement = Pose => Movement
+
+  val I = Complex.i[Float]
+  val Tau = 2 * Pi
 
   // Implicit conversions.
   implicit def DoubleToFloat(x: Double): Float = x.toFloat
@@ -131,6 +138,7 @@ object Geometry {
   case class Pose(placement: Placement, timeOffset: Time) {
     val x = placement.x
     val y = placement.y
+    val t = timeOffset
     val point = placement.point
     val orientation = placement.orientation
 
@@ -158,9 +166,24 @@ object Geometry {
         case _ => placement towards s
       })
 
+    def move(m: AbstractMovement, t: Time): Pose =
+      Pose(
+        m(this)(t),
+        timeOffset + t
+      )
+
     def matrix3: Matrix3 = placement.matrix3
     def matrix4: Matrix4 = placement.matrix4
   }
+
+  def playerAtPose(pose: Pose) =
+    Pose(
+      Placement(
+        CharacterPosition.at(pose.timeOffset),
+        pose.orientation
+      ),
+      pose.timeOffset
+    )
 
   case class Rect[T](x: T, y: T, w: T, h: T)
 

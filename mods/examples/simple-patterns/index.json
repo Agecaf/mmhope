@@ -4,7 +4,8 @@
   "author" : "",
   "description" : "Examples of simple bullet patterns",
   "libs" : [],
-  "levels" : ["circular.scala"],
+  "levels" : ["complex.scala"],
+  "_levels" : ["circular.scala", "target.scala", "bezier.scala"],
   "characters" : ["character.scala"],
   "assets" : {
     "fonts" : [],
